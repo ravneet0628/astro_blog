@@ -1,0 +1,90 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PostCard from '../components/PostCard.astro';
+import AuthorSidebar from '../components/AuthorSidebar.astro';
+import { getSiteSettings } from '../lib/site-settings';
+import { getPosts } from '../lib/strapi';
+
+// Get site settings
+const siteSettings = await getSiteSettings();
+
+// Fetch recent posts
+const postsResponse = await getPosts(8);
+const posts = postsResponse.data || [];
+const featuredPost = posts[0];
+---
+
+<Layout title={siteSettings.siteTitle} description={siteSettings.siteDescription}>
+			{posts.length > 0 ? (
+				<>
+			<!-- Hero Section -->
+			<section class="max-w-6xl mx-auto px-6 py-12">
+				<h2 class="text-xl font-serif font-bold text-primary mb-4">Featured</h2>
+				<div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+					<!-- Featured Post -->
+					
+					<div class="lg:col-span-2">
+						<PostCard post={featuredPost} featured={true} />
+					</div>
+
+					<!-- Sidebar -->
+					<AuthorSidebar />
+				</div>
+			</section>
+
+			<!-- Recent Posts -->
+					{posts.length > 1 && (
+				<section class="max-w-6xl mx-auto px-6 py-16">
+					<div class="flex items-center justify-between mb-8">
+						<h2 class="text-xl font-serif font-bold text-primary">Recent Stories</h2>
+									<a 
+										href="/blog" 
+							class="text-accent hover:text-primary font-medium transition-colors"
+									>
+							View all →
+									</a>
+								</div>
+								
+								<div class="grid gap-8 md:grid-cols-1 lg:grid-cols-2">
+									{posts.slice(1, 7).map((post) => (
+							<PostCard post={post} />
+						))}
+							</div>
+						</section>
+					)}
+				</>
+			) : (
+				<!-- Empty State -->
+		<section class="max-w-4xl mx-auto px-6 py-32 text-center">
+			<h1 class="text-4xl font-serif font-bold text-primary mb-4">
+				Welcome
+			</h1>
+			<p class="text-xl text-primary/70 mb-8">
+				No stories yet. Check back soon for new content.
+							</p>
+			<div class="bg-muted rounded-xl p-8 text-center max-w-md mx-auto">
+				<h3 class="font-serif text-2xl font-semibold text-primary mb-3">
+					Be the first to know
+				</h3>
+				<p class="text-primary/70 mb-6">
+					Get notified when we publish our first story.
+				</p>
+				
+				<form class="flex flex-col gap-3">
+					<input 
+						type="email" 
+						placeholder="Your email address"
+						class="flex-1 px-4 py-3 rounded-lg border border-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+						required
+					/>
+					<button 
+						type="submit"
+						class="px-6 py-3 bg-accent text-white font-medium rounded-lg hover:bg-primary transition-colors duration-200"
+					>
+						Subscribe
+					</button>
+				</form>
+			</div>
+				</section>
+			)}
+</Layout>

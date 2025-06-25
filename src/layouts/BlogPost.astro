@@ -1,0 +1,143 @@
+---
+import Layout from './Layout.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import ReadingTime from '../components/ReadingTime.astro';
+import PostCard from '../components/PostCard.astro';
+import { getRelatedPosts, getTagNames } from '../lib/strapi';
+import { getImageSrc } from '../lib/image';
+
+import type { StrapiTag } from '../lib/strapi';
+
+type Props = {
+	title: string;
+	description: string;
+	pubDate: Date;
+	updatedDate?: Date;
+	heroImage?: string;
+	tags?: StrapiTag[];
+	currentPostId?: string;
+};
+
+const { title, description, pubDate, updatedDate, heroImage, tags, currentPostId } = Astro.props;
+
+// UI strings (hardcoded)
+const shareText = 'Share:';
+const backToAllStories = '← Back to all stories';
+const relatedStoriesLabel = 'Related Stories';
+
+// Get the content for reading time calculation
+const content = await Astro.slots.render('default');
+
+// Fetch related posts if tags are available
+const tagNames = getTagNames(tags);
+const relatedPosts = tagNames.length > 0 
+	? (await getRelatedPosts(tagNames, 4)).filter(post => post.documentId !== currentPostId).slice(0, 3)
+	: [];
+---
+
+<Layout title={title} description={description}>
+	<article class="max-w-4xl mx-auto px-6 py-12">
+		<!-- Article Header -->
+		<header class="mb-12 text-center">
+			<div class="space-y-6">
+				<!-- Meta Information -->
+				<div class="flex items-center justify-center gap-4 text-sm text-primary/70">
+					<FormattedDate date={pubDate} />
+					{updatedDate && (
+						<span class="text-primary/50">
+							Updated <FormattedDate date={updatedDate} />
+						</span>
+					)}
+					<ReadingTime content={content} showIcon={false} />
+				</div>
+
+				<!-- Title -->
+				<h1 class="text-4xl lg:text-5xl font-serif font-bold text-primary leading-tight">
+					{title}
+				</h1>
+
+				<!-- Tags -->
+				{tags && tags.length > 0 && (
+					<div class="flex flex-wrap items-center justify-center gap-2">
+						{tags.map((tag) => (
+							<a 
+								href={`/tags/${encodeURIComponent(tag.name)}`}
+								class="bg-muted text-primary px-3 py-1 rounded-full text-sm font-medium hover:bg-accent hover:text-white transition-colors"
+							>
+								#{tag.name}
+							</a>
+						))}
+					</div>
+				)}
+			</div>
+		</header>
+
+		<!-- Hero Image -->
+		<div class="mb-12">
+			<img 
+				src={heroImage || getImageSrc(null)} 
+				alt={title}
+				class="w-full aspect-[16/9] object-cover rounded-xl"
+			/>
+		</div>
+
+		<!-- Article Content -->
+		<div class="prose prose-lg max-w-none">
+			<slot />
+		</div>
+
+		<!-- Article Footer -->
+		<footer class="mt-16 pt-8 border-t border-muted">
+			<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+				<!-- Share Section -->
+				<div class="flex items-center gap-4">
+					<span class="text-sm font-medium text-primary">{shareText}</span>
+					<div class="flex gap-2">
+						<a 
+							href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(Astro.url.href)}`}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="p-2 text-primary/60 hover:text-accent transition-colors"
+							aria-label="Share on Twitter"
+						>
+							<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+								<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+							</svg>
+						</a>
+						<button 
+							class="p-2 text-primary/60 hover:text-accent transition-colors"
+							onclick="navigator.clipboard.writeText(window.location.href)"
+							aria-label="Copy link"
+						>
+							<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+							</svg>
+						</button>
+					</div>
+				</div>
+
+				<!-- Back to Blog -->
+				<a 
+					href="/blog" 
+					class="text-accent hover:text-primary font-medium transition-colors"
+				>
+					{backToAllStories}
+				</a>
+			</div>
+		</footer>
+
+		<!-- Related Posts -->
+		{relatedPosts.length > 0 && (
+			<section class="mt-16 pt-16 border-t border-muted">
+				<h2 class="text-3xl font-serif font-bold text-primary text-center mb-12">
+					{relatedStoriesLabel}
+				</h2>
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+					{relatedPosts.map((post) => (
+						<PostCard post={post} />
+					))}
+				</div>
+			</section>
+		)}
+	</article>
+</Layout>

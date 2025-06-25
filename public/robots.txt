@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://example.com/sitemap-index.xml
+# Update the domain above to your actual production domain
+
+# Block common bot-trap paths
+Disallow: /admin/
+Disallow: /.well-known/
+Disallow: /api/ 
