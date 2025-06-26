@@ -3,24 +3,14 @@ export const config = {
   // API Configuration
   strapi: {
     url: import.meta.env.VITE_STRAPI_URL || 'http://localhost:1337',
+    apiToken: import.meta.env.VITE_STRAPI_API_TOKEN || '',
     graphqlEndpoint: '/graphql',
     uploadsPath: '/uploads'
   },
 
-  // Site Configuration (fallbacks for when Strapi is unavailable)
+  // Site Configuration - ONLY technical stuff
   site: {
     url: import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4321',
-    title: import.meta.env.PUBLIC_SITE_TITLE || 'Sukh di Chah',
-    description: import.meta.env.PUBLIC_SITE_DESCRIPTION || 'A thoughtful collection of stories about life, style, and everything in between.',
-    author: import.meta.env.PUBLIC_AUTHOR || 'Sukhman Kaur',
-    social: {
-      twitter: import.meta.env.PUBLIC_TWITTER_URL || '',
-      instagram: import.meta.env.PUBLIC_INSTAGRAM_URL || '',
-      facebook: import.meta.env.PUBLIC_FACEBOOK_URL || '',
-      linkedin: import.meta.env.PUBLIC_LINKEDIN_URL || '',
-      github: import.meta.env.PUBLIC_GITHUB_URL || '',
-      email: import.meta.env.PUBLIC_EMAIL || ''
-    }
   },
 
   // Feature Flags

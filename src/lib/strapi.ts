@@ -4,6 +4,9 @@ import { config } from '../config/environment';
 export const strapiClient = new GraphQLClient(`${config.strapi.url}/graphql`, {
   headers: {
     'Content-Type': 'application/json',
+    ...(config.strapi.apiToken && {
+      'Authorization': `Bearer ${config.strapi.apiToken}`
+    })
   }
 });
 
