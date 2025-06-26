@@ -3,21 +3,8 @@
 interface ImportMetaEnv {
   // Strapi Configuration
   readonly VITE_STRAPI_URL: string;
-
-  // Site Configuration
-  readonly PUBLIC_SITE_URL: string;
-  readonly PUBLIC_SITE_TITLE?: string;
-  readonly PUBLIC_SITE_DESCRIPTION?: string;
-  readonly PUBLIC_AUTHOR?: string;
-
-  // Social Media Links
-  readonly PUBLIC_TWITTER_URL?: string;
-  readonly PUBLIC_INSTAGRAM_URL?: string;
-  readonly PUBLIC_FACEBOOK_URL?: string;
-  readonly PUBLIC_LINKEDIN_URL?: string;
-  readonly PUBLIC_GITHUB_URL?: string;
-  readonly PUBLIC_EMAIL?: string;
-
+  readonly VITE_STRAPI_API_TOKEN: string;
+  
   // Feature Flags
   readonly PUBLIC_ANALYTICS_ENABLED?: string;
   readonly PUBLIC_COMMENTS_ENABLED?: string;
