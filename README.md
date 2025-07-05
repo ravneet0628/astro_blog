@@ -199,12 +199,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For support and questions:
 - Open an issue on [GitHub](https://github.com/ravneet0628/astro_blog/issues)
-
-## 🔗 Related Projects
-
-- [Strapi CMS Backend](../cms/README.md) - Content management system
-- [Deployment Documentation](../deployment-plan.md) - Production deployment guide
-
 ---
-
-**Built with ❤️ using Astro and Strapi** 
