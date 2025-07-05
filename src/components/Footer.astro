@@ -107,10 +107,7 @@ const isExternalLink = (href: string) => {
 		</div>
 
 		<!-- Bottom Bar -->
-		<div class="pt-8 border-t border-muted flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-			<p class="text-sm text-primary/50">
-				&copy; {today.getFullYear()} {siteSettings.author}. All rights reserved.
-			</p>
+		<div class="pt-8 border-t border-muted flex flex-col md:flex-row md:items-center md:justify-center gap-4">
 			{siteSettings.footerText && (
 				<p class="text-sm text-primary/50">
 					{siteSettings.footerText}
