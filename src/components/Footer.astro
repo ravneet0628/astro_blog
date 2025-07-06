@@ -107,12 +107,20 @@ const isExternalLink = (href: string) => {
 		</div>
 
 		<!-- Bottom Bar -->
-		<div class="pt-8 border-t border-muted flex flex-col md:flex-row md:items-center md:justify-center gap-4">
+		<div class="pt-8 border-t border-muted flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 			{siteSettings.footerText && (
 				<p class="text-sm text-primary/50">
 					{siteSettings.footerText}
 				</p>
 			)}
+			<a 
+				href={import.meta.env.VITE_STRAPI_URL + '/admin'} 
+				target="_blank"
+				rel="noopener noreferrer"
+				class="text-xs text-primary/40 hover:text-accent transition-colors"
+			>
+				Admin
+			</a>
 		</div>
 	</div>
 </footer>
