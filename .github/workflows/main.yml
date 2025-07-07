@@ -7,6 +7,10 @@ on:
   workflow_dispatch:
   repository_dispatch:
 
+concurrency:
+  group: ${{ github.event_name == 'repository_dispatch' && 'content-updates' || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'repository_dispatch' }}
+
 permissions:
   contents: read
   deployments: write
