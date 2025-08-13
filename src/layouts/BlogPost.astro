@@ -11,6 +11,8 @@ import type { StrapiTag } from '../lib/strapi';
 type Props = {
 	title: string;
 	description: string;
+	seoTitle?: string;
+	seoDescription?: string;
 	pubDate: Date;
 	updatedDate?: Date;
 	heroImage?: string;
@@ -18,7 +20,7 @@ type Props = {
 	currentPostId?: string;
 };
 
-const { title, description, pubDate, updatedDate, heroImage, tags, currentPostId } = Astro.props;
+const { title, description, seoTitle, seoDescription, pubDate, updatedDate, heroImage, tags, currentPostId } = Astro.props;
 
 // UI strings (hardcoded)
 const shareText = 'Share:';
@@ -35,7 +37,7 @@ const relatedPosts = tagNames.length > 0
 	: [];
 ---
 
-<Layout title={title} description={description}>
+<Layout title={seoTitle || title} description={seoDescription || description}>
 	<article class="max-w-4xl mx-auto px-6 py-12">
 		<!-- Article Header -->
 		<header class="mb-12 text-center">

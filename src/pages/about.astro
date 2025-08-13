@@ -32,8 +32,10 @@ const htmlContent = marked(pageData.content);
 ---
 
 <Layout
-	title={pageData.metaTitle || pageData.title}
-	description={pageData.metaDescription || siteSettings.siteDescription}
+	title={pageData.title}
+	seoTitle={(pageData.metaTitle || '').trim() || pageData.title}
+	description={siteSettings.siteDescription}
+	seoDescription={(pageData.metaDescription || '').trim() || siteSettings.siteDescription}
 	pubDate={new Date()}
 >
 	<div class="prose prose-lg max-w-none">
