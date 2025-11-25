@@ -1,133 +1,54 @@
-content:
-  - name: posts
-    label: Blog Posts
-    path: src/content/blog
-    type: collection
-    view:
-      fields: [title, publishedAt, draft]
-      primary: title
-      sort: [publishedAt, title]
-      default:
-        sort: publishedAt
-        order: desc
-    fields:
-      - name: title
-        label: Title
-        type: string
-        required: true
-      - name: excerpt
-        label: Summary
-        type: text
-      - name: publishedAt
-        label: Publish Date
-        type: date
-        required: true
-      - name: draft
-        label: Draft
-        type: boolean
-        default: false
-      - name: tags
-        label: Tags
-        type: string
-        list: true
-      - name: cover
-        label: Cover Image
-        type: object
-        fields:
-          - name: src
-            label: Image
-            type: image
-          - name: alt
-            label: Alt Text
-            type: string
-      - name: body
-        label: Content
-        type: rich-text
-
-  - name: settings
-    label: Site Settings
-    path: src/data/site-settings.json
-    type: file
-    format: json
-    fields:
-      - name: siteTitle
-        label: Site Title
-        type: string
-        required: true
-      - name: siteDescription
-        label: Site Description
-        type: text
-        required: true
-      - name: author
-        label: Author Name
-        type: string
-        required: true
-      - name: authorBio
-        label: Author Bio
-        type: text
-      - name: authorImage
-        label: Author Photo
-        type: object
-        fields:
-          - name: src
-            label: Photo
-            type: image
-          - name: alt
-            label: Alt Text
-            type: string
-      - name: socialLinks
-        label: Social Links
-        type: object
-        fields:
-          - name: email
-            label: Email
-            type: string
-          - name: twitter
-            label: Twitter URL
-            type: string
-          - name: instagram
-            label: Instagram URL
-            type: string
-          - name: website
-            label: Website URL
-            type: string
-      - name: navigation
-        label: Navigation Menu
-        type: object
-        list: true
-        fields:
-          - name: label
-            label: Link Text
-            type: string
-            required: true
-          - name: href
-            label: URL
-            type: string
-            required: true
-          - name: external
-            label: External Link
-            type: boolean
-            default: false
-      - name: footerText
-        label: Footer Text
-        type: string
-      - name: aboutPage
-        label: About Page
-        type: object
-        fields:
-          - name: title
-            label: Title
-            type: string
-          - name: content
-            label: Content
-            type: rich-text
-          - name: metaTitle
-            label: SEO Title
-            type: string
-          - name: metaDescription
-            label: SEO Description
-            type: text
-
 media:
   input: public/uploads
   output: /uploads
+
+content:
+  - name: posts
+    label: Blog Posts
+    type: collection
+    path: src/content/blog
+    view:
+      fields: [title, publishedAt, draft]
+    fields:
+      - { name: title, label: Title, type: string, required: true }
+      - { name: excerpt, label: Summary, type: text }
+      - { name: publishedAt, label: Publish Date, type: date, required: true }
+      - { name: draft, label: Draft, type: boolean }
+      - { name: tags, label: Tags, type: string, list: true }
+      - { name: cover, label: Cover Image, type: object, fields: [
+          { name: src, label: Image, type: image },
+          { name: alt, label: Alt Text, type: string }
+        ]}
+      - { name: body, label: Content, type: rich-text }
+
+  - name: settings
+    label: Site Settings
+    type: file
+    path: src/data/site-settings.json
+    fields:
+      - { name: siteTitle, label: Site Title, type: string, required: true }
+      - { name: siteDescription, label: Site Description, type: text, required: true }
+      - { name: author, label: Author Name, type: string, required: true }
+      - { name: authorBio, label: Author Bio, type: text }
+      - { name: authorImage, label: Author Photo, type: object, fields: [
+          { name: src, label: Photo, type: image },
+          { name: alt, label: Alt Text, type: string }
+        ]}
+      - { name: socialLinks, label: Social Links, type: object, fields: [
+          { name: email, label: Email, type: string },
+          { name: twitter, label: Twitter URL, type: string },
+          { name: instagram, label: Instagram URL, type: string },
+          { name: website, label: Website URL, type: string }
+        ]}
+      - { name: navigation, label: Navigation Menu, type: object, list: true, fields: [
+          { name: label, label: Link Text, type: string, required: true },
+          { name: href, label: URL, type: string, required: true },
+          { name: external, label: External Link, type: boolean }
+        ]}
+      - { name: footerText, label: Footer Text, type: string }
+      - { name: aboutPage, label: About Page, type: object, fields: [
+          { name: title, label: Title, type: string },
+          { name: content, label: Content, type: rich-text },
+          { name: metaTitle, label: SEO Title, type: string },
+          { name: metaDescription, label: SEO Description, type: text }
+        ]}
