@@ -3,17 +3,13 @@ content:
     label: Blog Posts
     path: src/content/blog
     type: collection
-    format: frontmatter
-    match: "**/*.md"
-    label_field: title
-    slug_field: title
-    body_field: body
-    preview_path: /blog/{{ slug }}
     view:
-      fields: [title, publishedAt, featured, draft]
+      fields: [title, publishedAt, draft]
       primary: title
-      sort: publishedAt
-      order: desc
+      sort: [publishedAt, title]
+      default:
+        sort: publishedAt
+        order: desc
     fields:
       - name: title
         label: Title
@@ -26,12 +22,10 @@ content:
         label: Publish Date
         type: date
         required: true
-      - name: featured
-        label: Featured
-        type: boolean
       - name: draft
         label: Draft
         type: boolean
+        default: false
       - name: tags
         label: Tags
         type: string
@@ -48,7 +42,7 @@ content:
             type: string
       - name: body
         label: Content
-        type: markdown
+        type: rich-text
 
   - name: settings
     label: Site Settings
@@ -113,6 +107,7 @@ content:
           - name: external
             label: External Link
             type: boolean
+            default: false
       - name: footerText
         label: Footer Text
         type: string
@@ -136,4 +131,3 @@ content:
 media:
   input: public/uploads
   output: /uploads
-
