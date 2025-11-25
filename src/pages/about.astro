@@ -2,44 +2,24 @@
 import Layout from '../layouts/BlogPost.astro';
 import { getSiteSettings } from '../lib/site-settings';
 import { getCollection } from 'astro:content';
-import { marked } from 'marked';
+import { getImageSrc } from '../lib/image';
 
 const siteSettings = getSiteSettings();
 
 // Get About page from pages collection
-let aboutPage = null;
-let Content = null;
-try {
-  const pages = await getCollection('pages');
-  aboutPage = pages.find(page => page.slug === 'about');
-  if (aboutPage) {
-    const rendered = await aboutPage.render();
-    Content = rendered.Content;
-  }
-} catch (error) {
-  console.error('Failed to load about page:', error);
+const pages = await getCollection('pages');
+const aboutPage = pages.find(page => page.slug === 'about');
+
+if (!aboutPage) {
+	return Astro.redirect('/404');
 }
 
-// Default content if about page is not configured
-const defaultContent = `# About Me
-
-Welcome to my corner of the internet, where I share stories about life, style, travel, and everything that sparks joy.
-
-I'm passionate about finding beauty in the everyday moments and sharing those discoveries with others. Whether it's a perfectly brewed cup of coffee, a stunning sunset, or an inspiring conversation, I believe these small moments shape our lives in meaningful ways.
-
-## What You'll Find Here
-
-- **Personal Stories**: Authentic experiences and reflections on daily life
-- **Style & Beauty**: Fashion finds, beauty tips, and lifestyle inspiration  
-- **Travel Tales**: Adventures from near and far, with practical tips
-- **Thoughtful Living**: Ideas for creating a more intentional, joyful life
-
-Thank you for being here and joining me on this journey. I'd love to connect with you - feel free to reach out through any of the social links below.`;
-
-const pageTitle = aboutPage?.data.title || 'About';
-const metaTitle = aboutPage?.data.metaTitle || pageTitle;
-const metaDescription = aboutPage?.data.metaDescription || siteSettings.siteDescription;
-const htmlContent = marked(defaultContent);
+const { Content } = await aboutPage.render();
+const pageTitle = aboutPage.data.title;
+const metaTitle = aboutPage.data.metaTitle || pageTitle;
+const metaDescription = aboutPage.data.metaDescription || siteSettings.siteDescription;
+const heroImage = aboutPage.data.heroImage ? getImageSrc(aboutPage.data.heroImage) : undefined;
+const heroImageAlt = aboutPage.data.heroImage?.alt || pageTitle;
 ---
 
 <Layout
@@ -48,13 +28,10 @@ const htmlContent = marked(defaultContent);
 	description={siteSettings.siteDescription}
 	seoDescription={metaDescription}
 	pubDate={new Date()}
+	heroImage={heroImage}
 >
 	<div class="prose prose-lg max-w-none">
-		{Content ? (
-			<Content />
-		) : (
-			<div set:html={htmlContent} />
-		)}
+		<Content />
 
 		<div class="bg-muted rounded-2xl p-8 mt-8">
 			<h3 class="text-xl font-serif font-semibold text-primary mb-4">Let's Connect</h3>
