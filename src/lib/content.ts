@@ -15,7 +15,7 @@ export interface PostData {
   };
   tags: string[];
   publishedAt: Date;
-  updatedAt?: Date;
+  featured: boolean;
   draft: boolean;
 }
 
@@ -30,7 +30,7 @@ export function toPostData(entry: BlogPost): PostData {
     cover: entry.data.cover,
     tags: entry.data.tags,
     publishedAt: entry.data.publishedAt,
-    updatedAt: entry.data.updatedAt,
+    featured: entry.data.featured,
     draft: entry.data.draft,
   };
 }
