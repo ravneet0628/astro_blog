@@ -5,6 +5,10 @@ content:
     path: src/content/blog
     type: collection
     format: md
+    label_field: title
+    slug_field: title
+    search_fields: [title, excerpt, tags]
+    preview_path: /blog/{{ slug }}
     fields:
       - name: title
         label: Title
@@ -29,11 +33,20 @@ content:
         type: boolean
         default: false
         description: Featured posts appear prominently on the homepage
+      - name: draft
+        label: Draft
+        type: boolean
+        default: false
+        description: Enable this to save without publishing - only you can see draft posts
       - name: tags
         label: Tags
         type: string
         list: true
         description: Add tags to help readers find related content (e.g. lifestyle, travel, tips)
+      - name: body
+        label: Content
+        type: markdown
+        description: Write your post content here (supports markdown formatting)
       - name: cover
         label: Cover Image
         type: object
@@ -47,11 +60,6 @@ content:
             label: Alt Text
             type: string
             description: Describe the image for accessibility (e.g. "Woman reading a book in a cafe")
-      - name: draft
-        label: Draft
-        type: boolean
-        default: false
-        description: Enable this to save without publishing - only you can see draft posts
       - name: canonicalUrl
         label: Canonical URL
         type: string
@@ -63,6 +71,10 @@ content:
     path: src/content/pages
     type: collection
     format: md
+    label_field: title
+    slug_field: title
+    search_fields: [title, description]
+    preview_path: /{{ slug }}
     fields:
       - name: title
         label: Page Title
@@ -94,6 +106,10 @@ content:
         label: Navigation Order
         type: number
         description: Order in navigation menu (lower numbers appear first)
+      - name: body
+        label: Page Content
+        type: markdown
+        description: Write the page content here using markdown
 
   # Site Settings
   - name: settings
