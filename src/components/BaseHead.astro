@@ -30,8 +30,8 @@ const {
 	tags = []
 } = Astro.props;
 
-// Get site settings from Strapi with fallbacks
-const siteSettings = await getSiteSettings();
+// Get site settings
+const siteSettings = getSiteSettings();
 const siteTitle = siteSettings.siteTitle;
 const siteAuthor = siteSettings.author;
 

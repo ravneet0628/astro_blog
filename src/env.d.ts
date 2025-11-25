@@ -1,13 +1,8 @@
 /// <reference path="../.astro/types.d.ts" />
 
 interface ImportMetaEnv {
-  // Strapi Configuration
-  readonly VITE_STRAPI_URL: string;
-  readonly VITE_STRAPI_API_TOKEN: string;
-
   // Site Configuration
   readonly PUBLIC_SITE_URL: string;
-
 
   // Feature Flags
   readonly PUBLIC_ANALYTICS_ENABLED?: string;
@@ -32,4 +27,4 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
-} 
+}

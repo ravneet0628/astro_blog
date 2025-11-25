@@ -1,0 +1,114 @@
+content:
+  - name: posts
+    label: Blog Posts
+    path: src/content/blog
+    type: collection
+    format: md
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: excerpt
+        label: Excerpt
+        type: text
+        description: A short summary of the post (shown in previews)
+      - name: publishedAt
+        label: Publish Date
+        type: date
+        required: true
+      - name: updatedAt
+        label: Last Updated
+        type: date
+      - name: tags
+        label: Tags
+        type: string
+        list: true
+        description: Add tags to categorize your post
+      - name: cover
+        label: Cover Image
+        type: object
+        fields:
+          - name: src
+            label: Image
+            type: image
+          - name: alt
+            label: Alt Text
+            type: string
+      - name: draft
+        label: Draft
+        type: boolean
+        default: false
+        description: Draft posts are not published
+
+  - name: settings
+    label: Site Settings
+    path: src/data/site-settings.json
+    type: file
+    format: json
+    fields:
+      - name: siteTitle
+        label: Site Title
+        type: string
+        required: true
+      - name: siteDescription
+        label: Site Description
+        type: text
+        required: true
+      - name: author
+        label: Author Name
+        type: string
+        required: true
+      - name: authorBio
+        label: Author Bio
+        type: text
+      - name: authorImage
+        label: Author Image
+        type: object
+        fields:
+          - name: src
+            label: Image
+            type: image
+          - name: alt
+            label: Alt Text
+            type: string
+      - name: socialLinks
+        label: Social Links
+        type: object
+        fields:
+          - name: email
+            label: Email
+            type: string
+          - name: twitter
+            label: Twitter URL
+            type: string
+          - name: instagram
+            label: Instagram URL
+            type: string
+          - name: website
+            label: Website URL
+            type: string
+      - name: footerText
+        label: Footer Text
+        type: string
+      - name: aboutPage
+        label: About Page
+        type: object
+        fields:
+          - name: title
+            label: Title
+            type: string
+          - name: content
+            label: Content
+            type: rich-text
+          - name: metaTitle
+            label: Meta Title
+            type: string
+          - name: metaDescription
+            label: Meta Description
+            type: text
+
+media:
+  input: public/uploads
+  output: /uploads
+

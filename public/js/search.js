@@ -134,9 +134,9 @@ class BlogSearch {
         return true;
       }
       
-      // Search in tags
+      // Search in tags (tags are now strings, not objects)
       if (post.tags && post.tags.some(tag => 
-        tag.name && tag.name.toLowerCase().includes(lowerQuery)
+        typeof tag === 'string' && tag.toLowerCase().includes(lowerQuery)
       )) {
         return true;
       }
@@ -165,9 +165,9 @@ class BlogSearch {
     }
     
     const postsHTML = posts.slice(0, 10).map(post => {
-      const imageHTML = post.cover && post.cover.url 
+      const imageHTML = post.cover && post.cover.src 
         ? `<div class="w-12 h-12 rounded flex-shrink-0 overflow-hidden bg-gray-100" style="width: 48px; height: 48px; min-width: 48px; min-height: 48px; max-width: 48px; max-height: 48px;">
-             <img src="${this.getImageUrl(post.cover)}" alt="${post.cover.alternativeText || post.title}" class="w-full h-full object-cover" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" />
+             <img src="${post.cover.src}" alt="${post.cover.alt || post.title}" class="w-full h-full object-cover" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" />
            </div>`
         : '<div class="w-12 h-12 bg-gray-100 rounded flex-shrink-0 flex items-center justify-center" style="width: 48px; height: 48px; min-width: 48px; min-height: 48px;"><svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>';
 
@@ -175,10 +175,11 @@ class BlogSearch {
         ? `<p class="text-xs text-gray-600 mt-1 line-clamp-2">${post.excerpt}</p>`
         : '';
 
+      // Tags are now strings, not objects with .name property
       const tagsHTML = post.tags && post.tags.length > 0
         ? `<div class="flex flex-wrap gap-1 mt-2">
              ${post.tags.slice(0, 2).map(tag => 
-               `<span class="inline-block px-2 py-0.5 bg-muted text-xs text-primary/70 rounded">#${tag.name}</span>`
+               `<span class="inline-block px-2 py-0.5 bg-muted text-xs text-primary/70 rounded">#${tag}</span>`
              ).join('')}
              ${post.tags.length > 2 ? `<span class="text-xs text-primary/50">+${post.tags.length - 2}</span>` : ''}
            </div>`
@@ -213,27 +214,6 @@ class BlogSearch {
       if (element) element.classList.add('hidden');
     });
   }
-
-  getImageUrl(image) {
-    if (!image || !image.url) return '';
-    
-    // Check if we have formats available (Strapi auto-generates these)
-    if (image.formats) {
-      // Use thumbnail first (160x160), then small (500px), then original
-      if (image.formats.thumbnail?.url) {
-        const url = image.formats.thumbnail.url;
-        return url.startsWith('http') ? url : 'http://localhost:1337' + url;
-      }
-      if (image.formats.small?.url) {
-        const url = image.formats.small.url;
-        return url.startsWith('http') ? url : 'http://localhost:1337' + url;
-      }
-    }
-    
-    // Fallback to original with width query parameter for optimization
-    const baseUrl = image.url.startsWith('http') ? image.url : 'http://localhost:1337' + image.url;
-    return baseUrl + '?width=96&height=96&fit=cover'; // 96px for retina displays on 48px container
-  }
 }
 
 // Mobile menu functionality
@@ -257,4 +237,4 @@ class MobileMenu {
 document.addEventListener('DOMContentLoaded', () => {
   new MobileMenu();
   new BlogSearch();
-}); 
+});
