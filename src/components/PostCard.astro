@@ -1,11 +1,11 @@
 ---
-import type { StrapiPost } from '../lib/strapi';
+import type { PostData } from '../lib/content';
 import FormattedDate from './FormattedDate.astro';
 import ReadingTime from './ReadingTime.astro';
 import OptimizedImage from './OptimizedImage.astro';
 
 export interface Props {
-  post: StrapiPost;
+  post: PostData;
   featured?: boolean;
 }
 
@@ -19,7 +19,7 @@ const { post, featured = false } = Astro.props;
     }`}>
       <OptimizedImage 
         src={post.cover}
-        alt={post.cover?.alternativeText || post.title}
+        alt={post.cover?.alt || post.title}
         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         loading={featured ? "eager" : "lazy"}
       />
@@ -28,15 +28,15 @@ const { post, featured = false } = Astro.props;
     <div class="space-y-3">
       <!-- Meta -->
       <div class="flex items-center gap-3 text-sm text-primary/70">
-        <FormattedDate date={post.publishedAt || post.createdAt} />
+        <FormattedDate date={post.publishedAt} />
         {post.tags && post.tags.length > 0 && (
           <div class="flex items-center gap-2">
             <a 
-              href={`/tags/${encodeURIComponent(post.tags[0].name)}`}
+              href={`/tags/${encodeURIComponent(post.tags[0])}`}
               class="bg-muted text-primary px-2 py-1 rounded-full text-xs font-medium hover:bg-accent hover:text-white transition-colors"
               onclick="event.stopPropagation()"
             >
-              #{post.tags[0].name}
+              #{post.tags[0]}
             </a>
 
           </div>
@@ -44,11 +44,11 @@ const { post, featured = false } = Astro.props;
         {post.tags && post.tags.length > 1 && (
           <div class="flex items-center gap-2">
             <a 
-              href={`/tags/${encodeURIComponent(post.tags[1].name)}`}
+              href={`/tags/${encodeURIComponent(post.tags[1])}`}
               class="bg-muted text-primary px-2 py-1 rounded-full text-xs font-medium hover:bg-accent hover:text-white transition-colors"
               onclick="event.stopPropagation()"
             >
-              #{post.tags[1].name}
+              #{post.tags[1]}
             </a>
             {post.tags.length > 2 && (
               <span class="text-xs text-primary/50">+{post.tags.length - 2}</span>
@@ -79,4 +79,4 @@ const { post, featured = false } = Astro.props;
       )}
     </div>
   </a>
-</article> 
+</article>

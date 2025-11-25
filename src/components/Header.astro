@@ -1,14 +1,12 @@
 ---
 import HeaderLink from './HeaderLink.astro';
-import { config } from '../config/environment';
-import { getPosts } from '../lib/strapi';
+import { getPosts, type PostData } from '../lib/content';
 import { getSiteSettings, getNavigationItems } from '../lib/site-settings';
-import type { StrapiPost } from '../lib/strapi';
 
 const currentPath = Astro.url.pathname;
 
 // Get site settings and navigation
-const siteSettings = await getSiteSettings();
+const siteSettings = getSiteSettings();
 const navigationItems = getNavigationItems();
 
 // Helper function to detect external links
@@ -17,15 +15,22 @@ const isExternalLink = (href: string) => {
 };
 
 // Load posts for search functionality
-let searchPosts: StrapiPost[] = [];
+let searchPosts: PostData[] = [];
 try {
-	const postsResponse = await getPosts(100);
-	searchPosts = postsResponse.data || [];
+	searchPosts = await getPosts(100);
 	console.log(`Loaded ${searchPosts.length} posts for search`);
 } catch (error) {
 	console.error('Failed to load posts for search:', error);
 	searchPosts = [];
 }
+
+// Transform posts for search (only include necessary fields)
+const searchData = searchPosts.map(post => ({
+	title: post.title,
+	slug: post.slug,
+	excerpt: post.excerpt || '',
+	tags: post.tags,
+}));
 ---
 
 <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-muted">
@@ -155,7 +160,7 @@ try {
 </header>
 
 <!-- Embed search data in the page -->
-<script is:inline define:vars={{ searchData: searchPosts }}>
+<script is:inline define:vars={{ searchData }}>
 	// Embedded search data (loaded at build time)
 	window.SEARCH_DATA = searchData;
 </script>

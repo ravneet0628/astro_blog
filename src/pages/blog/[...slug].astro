@@ -1,8 +1,7 @@
 ---
 import BlogPost from '../../layouts/BlogPost.astro';
-import { getAllSlugs, getPostBySlug } from '../../lib/strapi';
-import { marked } from 'marked';
-import { getImageUrl } from '../../config/environment';
+import { getAllSlugs, getPostBySlug } from '../../lib/content';
+import { getImageSrc } from '../../lib/image';
 
 export async function getStaticPaths() {
 	const slugs = await getAllSlugs();
@@ -12,34 +11,26 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-const post = await getPostBySlug(slug!);
+const result = await getPostBySlug(slug!);
 
-if (!post) {
+if (!result) {
 	return Astro.redirect('/404');
 }
 
-// Configure marked for better rendering
-marked.setOptions({
-	breaks: true,
-	gfm: true,
-});
+const { post, data } = result;
+const { Content } = await post.render();
 
 const postData = {
-	title: post.title,
-	description: post.excerpt || '',
-	pubDate: new Date(post.publishedAt || post.createdAt),
-	updatedDate: new Date(post.updatedAt),
-	heroImage: post.cover?.url 
-		? getImageUrl(post.cover)
-		: undefined,
-	tags: post.tags || [],
-	currentPostId: post.documentId,
+	title: data.title,
+	description: data.excerpt || '',
+	pubDate: data.publishedAt,
+	updatedDate: data.updatedAt,
+	heroImage: data.cover ? getImageSrc(data.cover) : undefined,
+	tags: data.tags,
+	currentPostSlug: data.slug,
 };
-
-// Convert markdown to HTML
-const htmlContent = marked.parse(post.body || '');
 ---
 
 <BlogPost {...postData}>
-	<div set:html={htmlContent} />
+	<Content />
 </BlogPost>

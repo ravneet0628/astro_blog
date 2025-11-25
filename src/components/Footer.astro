@@ -4,9 +4,9 @@ import { getSiteSettings, getNavigationItems, getSocialLinks } from '../lib/site
 const today = new Date();
 
 // Get site settings and dynamic content
-const siteSettings = await getSiteSettings();
-const navigationItems = await getNavigationItems();
-const socialLinks = await getSocialLinks() as Record<string, string>;
+const siteSettings = getSiteSettings();
+const navigationItems = getNavigationItems();
+const socialLinks = getSocialLinks() as Record<string, string>;
 
 // Helper function to detect external links
 const isExternalLink = (href: string) => {
@@ -113,14 +113,9 @@ const isExternalLink = (href: string) => {
 					{siteSettings.footerText}
 				</p>
 			)}
-			<a 
-				href={import.meta.env.VITE_STRAPI_URL + '/admin'} 
-				target="_blank"
-				rel="noopener noreferrer"
-				class="text-xs text-primary/40 hover:text-accent transition-colors"
-			>
-				Admin
-			</a>
+			<p class="text-xs text-primary/40">
+				© {today.getFullYear()} {siteSettings.siteTitle}
+			</p>
 		</div>
 	</div>
 </footer>

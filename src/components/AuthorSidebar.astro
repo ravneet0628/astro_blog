@@ -1,15 +1,14 @@
 ---
 import { getSiteSettings } from '../lib/site-settings';
-import { getImageUrl } from '../config/environment';
 
-// Get site settings from CMS
-const siteSettings = await getSiteSettings();
+// Get site settings
+const siteSettings = getSiteSettings();
 
-// Author data from CMS with fallbacks
+// Author data with fallbacks
 const author = {
   name: siteSettings.author || 'Blog Author',
   bio: siteSettings.authorBio || 'Welcome to my corner of the internet.',
-  avatar: siteSettings.authorImage?.url ? getImageUrl(siteSettings.authorImage) : undefined,
+  avatar: siteSettings.authorImage?.src || undefined,
   social: {
     instagram: siteSettings.socialLinks?.instagram || '',
     twitter: siteSettings.socialLinks?.twitter || '',
@@ -142,4 +141,4 @@ const author = {
       </button>
     </form>
   </div>
-</div> 
+</div>

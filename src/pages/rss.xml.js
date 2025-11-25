@@ -1,13 +1,12 @@
 import rss from '@astrojs/rss';
-import { getPosts } from '../lib/strapi';
+import { getPosts } from '../lib/content';
 import { getSiteSettings } from '../lib/site-settings';
 
 export async function GET(context) {
-	const response = await getPosts(100); // Get all posts for RSS (already filtered by publishedAt)
-	const posts = response.data;
+	const posts = await getPosts(); // Get all posts (already filtered by draft status)
 	
 	// Get site settings for RSS metadata
-	const siteSettings = await getSiteSettings();
+	const siteSettings = getSiteSettings();
 	
 	return rss({
 		title: siteSettings.siteTitle,
@@ -16,7 +15,7 @@ export async function GET(context) {
 		items: posts.map((post) => ({
 			title: post.title,
 			description: post.excerpt || '',
-			pubDate: new Date(post.publishedAt || post.createdAt),
+			pubDate: post.publishedAt,
 			link: `/blog/${post.slug}/`,
 		})),
 	});

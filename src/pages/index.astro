@@ -3,14 +3,13 @@ import Layout from '../layouts/Layout.astro';
 import PostCard from '../components/PostCard.astro';
 import AuthorSidebar from '../components/AuthorSidebar.astro';
 import { getSiteSettings } from '../lib/site-settings';
-import { getPosts } from '../lib/strapi';
+import { getPosts } from '../lib/content';
 
 // Get site settings
-const siteSettings = await getSiteSettings();
+const siteSettings = getSiteSettings();
 
 // Fetch recent posts
-const postsResponse = await getPosts(8);
-const posts = postsResponse.data || [];
+const posts = await getPosts(8);
 const featuredPost = posts[0];
 ---
 

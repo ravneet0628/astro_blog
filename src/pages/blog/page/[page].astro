@@ -2,42 +2,36 @@
 import Layout from '../../../layouts/Layout.astro';
 import PostCard from '../../../components/PostCard.astro';
 import Pagination from '../../../components/Pagination.astro';
-import { getPosts } from '../../../lib/strapi';
+import { getPosts } from '../../../lib/content';
 
 const POSTS_PER_PAGE = 6;
 
 export async function getStaticPaths() {
   const POSTS_PER_PAGE = 6;
   
-  try {
-    // Fetch all posts to determine total pages
-    const { data: allPosts } = await getPosts(100); // Get a large number to count all
-    const totalPosts = allPosts.length;
-    const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
-    
-    // Generate paths for all pages
-    const paths = [];
-    for (let i = 1; i <= totalPages; i++) {
-      paths.push({
-        params: { page: i.toString() }
-      });
-    }
-    
-    return paths;
-  } catch (error) {
-    console.warn('Could not fetch posts for pagination, creating default page:', error);
-    // Return at least one page if API is unavailable
-    return [{ params: { page: '1' } }];
+  // Fetch all posts to determine total pages
+  const allPosts = await getPosts();
+  const totalPosts = allPosts.length;
+  const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
+  
+  // Generate paths for all pages (starting from page 2, page 1 is /blog)
+  const paths = [];
+  for (let i = 2; i <= totalPages; i++) {
+    paths.push({
+      params: { page: i.toString() }
+    });
   }
+  
+  return paths;
 }
 
 const { page } = Astro.params;
 const currentPage = parseInt(page || '1');
 const offset = (currentPage - 1) * POSTS_PER_PAGE;
 
-// Fetch posts for current page and total count
-const { data: posts } = await getPosts(POSTS_PER_PAGE, offset);
-const { data: allPosts } = await getPosts(100); // For total count
+// Fetch all posts and paginate
+const allPosts = await getPosts();
+const posts = allPosts.slice(offset, offset + POSTS_PER_PAGE);
 const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
 
 const pageTitle = currentPage === 1 ? 'All Stories' : `All Stories - Page ${currentPage}`;
@@ -84,4 +78,4 @@ const pageDescription = currentPage === 1
       basePath="/blog"
     />
   </div>
-</Layout> 
+</Layout>

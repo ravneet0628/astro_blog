@@ -1,24 +1,18 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import PostCard from '../../components/PostCard.astro';
-import { getPostsByTag, getAllTags } from '../../lib/strapi';
+import { getPostsByTag, getAllTags } from '../../lib/content';
 
 export async function getStaticPaths() {
-  try {
-    // Fetch all available tag names to generate static paths
-    const tagNames = await getAllTags();
-    
-    // Generate paths for each tag
-    const paths = tagNames.map((tagName) => ({
-      params: { tag: encodeURIComponent(tagName) }
-    }));
-    
-    return paths;
-  } catch (error) {
-    console.warn('Could not fetch tags for static paths, returning empty array:', error);
-    // Return empty array for fallback - pages will be generated on demand
-    return [];
-  }
+  // Fetch all available tag names to generate static paths
+  const tagNames = await getAllTags();
+  
+  // Generate paths for each tag
+  const paths = tagNames.map((tagName) => ({
+    params: { tag: encodeURIComponent(tagName) }
+  }));
+  
+  return paths;
 }
 
 const { tag: encodedTag } = Astro.params;
@@ -30,10 +24,7 @@ if (!encodedTag) {
 // Decode the tag name from URL
 const tag = decodeURIComponent(encodedTag);
 
-const { data: posts, error } = await getPostsByTag(tag, 50); // Get up to 50 posts per tag
-
-// Don't redirect if no posts - show the empty state instead
-const hasError = error && !posts;
+const posts = await getPostsByTag(tag, 50); // Get up to 50 posts per tag
 
 const pageTitle = `Posts tagged "${tag}"`;
 const pageDescription = `Explore all blog posts tagged with ${tag}. Discover related stories and insights.`;
@@ -47,7 +38,7 @@ const pageDescription = `Explore all blog posts tagged with ${tag}. Discover rel
         #{tag}
       </h1>
       <p class="text-lg text-primary/70 max-w-2xl mx-auto">
-        {hasError ? 'Error loading posts' : `${posts.length} ${posts.length === 1 ? 'post' : 'posts'} tagged with "${tag}"`}
+        {`${posts.length} ${posts.length === 1 ? 'post' : 'posts'} tagged with "${tag}"`}
       </p>
       <a 
         href="/blog" 
@@ -57,29 +48,7 @@ const pageDescription = `Explore all blog posts tagged with ${tag}. Discover rel
       </a>
     </header>
 
-    <!-- Error State -->
-    {hasError ? (
-      <div class="text-center py-16">
-        <h2 class="text-2xl font-serif text-primary mb-4">Unable to load posts</h2>
-        <p class="text-primary/70 mb-6">
-          There was an error loading posts for the tag "{tag}". This might be due to a temporary issue or configuration problem.
-        </p>
-        <div class="space-y-4">
-          <a 
-            href="/blog" 
-            class="inline-block bg-accent text-white px-6 py-3 rounded-lg hover:bg-primary transition-colors mr-4"
-          >
-            Browse all posts
-          </a>
-          <button 
-            onclick="window.location.reload()" 
-            class="inline-block border border-accent text-accent px-6 py-3 rounded-lg hover:bg-accent hover:text-white transition-colors"
-          >
-            Try again
-          </button>
-        </div>
-      </div>
-    ) : posts.length > 0 ? (
+    {posts.length > 0 ? (
       <!-- Posts Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {posts.map((post) => (
@@ -100,11 +69,8 @@ const pageDescription = `Explore all blog posts tagged with ${tag}. Discover rel
           >
             Browse all posts
           </a>
-          <p class="text-sm text-primary/50">
-            Note: If you expected posts here, the tag permissions might need to be configured in the admin panel.
-          </p>
         </div>
       </div>
     )}
   </div>
-</Layout> 
+</Layout>

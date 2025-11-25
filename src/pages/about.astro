@@ -3,10 +3,10 @@ import Layout from '../layouts/BlogPost.astro';
 import { getSiteSettings, getAboutPage } from '../lib/site-settings';
 import { marked } from 'marked';
 
-const siteSettings = await getSiteSettings();
-const aboutPage = await getAboutPage();
+const siteSettings = getSiteSettings();
+const aboutPage = getAboutPage();
 
-// Default content if CMS is unavailable
+// Default content if about page is not configured
 const defaultAbout = {
   title: 'About',
   content: `# About Me
