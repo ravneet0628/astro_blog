@@ -1,5 +1,5 @@
 ---
-title: "Building a Capsule Wardrobe: 30 Pieces for Effortless Style"
+title: "Building a Capsule Wardrobe: 30 Pieces for Effortless Style in 2025"
 excerpt: How I simplified my closet to 30 versatile pieces and finally feel
   confident getting dressed every morning.
 publishedAt: 2025-01-22
