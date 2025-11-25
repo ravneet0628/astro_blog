@@ -1,15 +1,27 @@
 ---
 import Layout from '../layouts/BlogPost.astro';
-import { getSiteSettings, getAboutPage } from '../lib/site-settings';
+import { getSiteSettings } from '../lib/site-settings';
+import { getCollection } from 'astro:content';
 import { marked } from 'marked';
 
 const siteSettings = getSiteSettings();
-const aboutPage = getAboutPage();
+
+// Get About page from pages collection
+let aboutPage = null;
+let Content = null;
+try {
+  const pages = await getCollection('pages');
+  aboutPage = pages.find(page => page.slug === 'about');
+  if (aboutPage) {
+    const rendered = await aboutPage.render();
+    Content = rendered.Content;
+  }
+} catch (error) {
+  console.error('Failed to load about page:', error);
+}
 
 // Default content if about page is not configured
-const defaultAbout = {
-  title: 'About',
-  content: `# About Me
+const defaultContent = `# About Me
 
 Welcome to my corner of the internet, where I share stories about life, style, travel, and everything that sparks joy.
 
@@ -22,24 +34,27 @@ I'm passionate about finding beauty in the everyday moments and sharing those di
 - **Travel Tales**: Adventures from near and far, with practical tips
 - **Thoughtful Living**: Ideas for creating a more intentional, joyful life
 
-Thank you for being here and joining me on this journey. I'd love to connect with you - feel free to reach out through any of the social links below.`,
-  metaTitle: 'About',
-  metaDescription: 'Learn more about me and what you\'ll find on this blog.'
-};
+Thank you for being here and joining me on this journey. I'd love to connect with you - feel free to reach out through any of the social links below.`;
 
-const pageData = aboutPage || defaultAbout;
-const htmlContent = marked(pageData.content);
+const pageTitle = aboutPage?.data.title || 'About';
+const metaTitle = aboutPage?.data.metaTitle || pageTitle;
+const metaDescription = aboutPage?.data.metaDescription || siteSettings.siteDescription;
+const htmlContent = marked(defaultContent);
 ---
 
 <Layout
-	title={pageData.title}
-	seoTitle={(pageData.metaTitle || '').trim() || pageData.title}
+	title={pageTitle}
+	seoTitle={metaTitle}
 	description={siteSettings.siteDescription}
-	seoDescription={(pageData.metaDescription || '').trim() || siteSettings.siteDescription}
+	seoDescription={metaDescription}
 	pubDate={new Date()}
 >
 	<div class="prose prose-lg max-w-none">
-		<div set:html={htmlContent} />
+		{Content ? (
+			<Content />
+		) : (
+			<div set:html={htmlContent} />
+		)}
 
 		<div class="bg-muted rounded-2xl p-8 mt-8">
 			<h3 class="text-xl font-serif font-semibold text-primary mb-4">Let's Connect</h3>

@@ -17,6 +17,21 @@ const blog = defineCollection({
   }),
 });
 
+// Pages collection for static pages like About
+const pages = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    metaTitle: z.string().optional(),
+    metaDescription: z.string().optional(),
+    heroImage: z.object({
+      src: z.string(),
+      alt: z.string().optional(),
+    }).optional(),
+  }),
+});
+
 export const collections = {
   blog,
+  pages,
 };

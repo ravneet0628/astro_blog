@@ -28,24 +28,14 @@ export interface SiteSettings {
     instagram?: string;
     website?: string;
   };
-  navigation?: NavigationItem[];
   footerText?: string;
   seoDefaults?: {
     ogImage?: ImageObject | null;
   };
 }
 
-// About page type
-export interface AboutPage {
-  title: string;
-  content: string;
-  metaTitle?: string;
-  metaDescription?: string;
-  heroImage?: ImageObject | null;
-}
-
-// Default navigation
-const DEFAULT_NAVIGATION: NavigationItem[] = [
+// Navigation is hardcoded - not editable in CMS
+const HARDCODED_NAVIGATION: NavigationItem[] = [
   { label: 'Home', href: '/' },
   { label: 'Blog', href: '/blog' },
   { label: 'About', href: '/about' },
@@ -63,7 +53,6 @@ const DEFAULT_SITE_SETTINGS: SiteSettings = {
     instagram: '',
     website: '',
   },
-  navigation: DEFAULT_NAVIGATION,
   footerText: '',
   seoDefaults: {
     ogImage: null,
@@ -86,9 +75,6 @@ export function getSiteSettings(): SiteSettings {
       ...DEFAULT_SITE_SETTINGS.socialLinks,
       ...(data.socialLinks || {}),
     },
-    navigation: data.navigation && data.navigation.length > 0 
-      ? data.navigation 
-      : DEFAULT_NAVIGATION,
     seoDefaults: {
       ...DEFAULT_SITE_SETTINGS.seoDefaults,
       ...(data.seoDefaults || {}),
@@ -97,19 +83,10 @@ export function getSiteSettings(): SiteSettings {
 }
 
 /**
- * Get about page content from local JSON file
- */
-export function getAboutPage(): AboutPage | null {
-  const data = siteSettingsData as SiteSettingsJSON & { aboutPage?: AboutPage };
-  return data.aboutPage || null;
-}
-
-/**
- * Get navigation items from CMS or defaults
+ * Get navigation items - hardcoded, not editable in CMS
  */
 export function getNavigationItems(): NavigationItem[] {
-  const settings = getSiteSettings();
-  return settings.navigation || DEFAULT_NAVIGATION;
+  return HARDCODED_NAVIGATION;
 }
 
 /**

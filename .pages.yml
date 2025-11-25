@@ -21,6 +21,22 @@ content:
         ]}
       - { name: body, label: Content, type: rich-text }
 
+  - name: pages
+    label: Pages
+    type: collection
+    path: src/content/pages
+    view:
+      fields: [title]
+    fields:
+      - { name: title, label: Title, type: string, required: true }
+      - { name: metaTitle, label: SEO Title, type: string }
+      - { name: metaDescription, label: SEO Description, type: text }
+      - { name: heroImage, label: Hero Image, type: object, fields: [
+          { name: src, label: Image, type: image },
+          { name: alt, label: Alt Text, type: string }
+        ]}
+      - { name: body, label: Content, type: rich-text }
+
   - name: settings
     label: Site Settings
     type: file
@@ -40,15 +56,4 @@ content:
           { name: instagram, label: Instagram URL, type: string },
           { name: website, label: Website URL, type: string }
         ]}
-      - { name: navigation, label: Navigation Menu, type: object, list: true, fields: [
-          { name: label, label: Link Text, type: string, required: true },
-          { name: href, label: URL, type: string, required: true },
-          { name: external, label: External Link, type: boolean }
-        ]}
       - { name: footerText, label: Footer Text, type: string }
-      - { name: aboutPage, label: About Page, type: object, fields: [
-          { name: title, label: Title, type: string },
-          { name: content, label: Content, type: rich-text },
-          { name: metaTitle, label: SEO Title, type: string },
-          { name: metaDescription, label: SEO Description, type: text }
-        ]}
