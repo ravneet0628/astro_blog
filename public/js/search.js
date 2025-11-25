@@ -134,7 +134,7 @@ class BlogSearch {
         return true;
       }
       
-      // Search in tags (tags are now strings, not objects)
+      // Search in tags
       if (post.tags && post.tags.some(tag => 
         typeof tag === 'string' && tag.toLowerCase().includes(lowerQuery)
       )) {
@@ -166,16 +166,15 @@ class BlogSearch {
     
     const postsHTML = posts.slice(0, 10).map(post => {
       const imageHTML = post.cover && post.cover.src 
-        ? `<div class="w-12 h-12 rounded flex-shrink-0 overflow-hidden bg-gray-100" style="width: 48px; height: 48px; min-width: 48px; min-height: 48px; max-width: 48px; max-height: 48px;">
-             <img src="${post.cover.src}" alt="${post.cover.alt || post.title}" class="w-full h-full object-cover" style="width: 100%; height: 100%; object-fit: cover;" loading="lazy" />
+        ? `<div class="w-12 h-12 rounded flex-shrink-0 overflow-hidden bg-muted" style="width: 48px; height: 48px; min-width: 48px; min-height: 48px;">
+             <img src="${post.cover.src}" alt="${post.cover.alt || post.title}" class="w-full h-full object-cover" loading="lazy" />
            </div>`
-        : '<div class="w-12 h-12 bg-gray-100 rounded flex-shrink-0 flex items-center justify-center" style="width: 48px; height: 48px; min-width: 48px; min-height: 48px;"><svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>';
+        : '<div class="w-12 h-12 bg-muted rounded flex-shrink-0 flex items-center justify-center" style="width: 48px; height: 48px;"><svg class="w-4 h-4 text-primary/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></div>';
 
       const excerptHTML = post.excerpt 
-        ? `<p class="text-xs text-gray-600 mt-1 line-clamp-2">${post.excerpt}</p>`
+        ? `<p class="text-xs text-primary/60 mt-1 line-clamp-2">${post.excerpt}</p>`
         : '';
 
-      // Tags are now strings, not objects with .name property
       const tagsHTML = post.tags && post.tags.length > 0
         ? `<div class="flex flex-wrap gap-1 mt-2">
              ${post.tags.slice(0, 2).map(tag => 
@@ -185,11 +184,11 @@ class BlogSearch {
            </div>`
         : '';
 
-      return `<a href="/blog/${post.slug}" class="block p-3 hover:bg-gray-50 rounded-lg transition-colors group">
+      return `<a href="/blog/${post.slug}" class="block p-3 hover:bg-muted rounded-lg transition-colors group">
         <div class="flex items-start space-x-3">
           ${imageHTML}
           <div class="flex-1 min-w-0">
-            <h3 class="font-medium text-gray-900 group-hover:text-blue-600 text-sm truncate">${post.title}</h3>
+            <h3 class="font-medium text-primary group-hover:text-accent text-sm truncate">${post.title}</h3>
             ${excerptHTML}
             ${tagsHTML}
           </div>
@@ -233,8 +232,14 @@ class MobileMenu {
   }
 }
 
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+// Initialize function
+function initializeApp() {
   new MobileMenu();
   new BlogSearch();
-});
+}
+
+// Initialize on first load
+document.addEventListener('DOMContentLoaded', initializeApp);
+
+// Re-initialize after Astro View Transitions navigation
+document.addEventListener('astro:page-load', initializeApp);

@@ -1,4 +1,5 @@
 content:
+  # Blog Posts Collection
   - name: posts
     label: Blog Posts
     path: src/content/blog
@@ -9,106 +10,250 @@ content:
         label: Title
         type: string
         required: true
+        description: The main headline for your post (will appear in search results)
       - name: excerpt
         label: Excerpt
         type: text
-        description: A short summary of the post (shown in previews)
+        description: A 1-2 sentence summary shown in post previews and social shares
       - name: publishedAt
         label: Publish Date
         type: date
         required: true
+        description: When this post should be published
       - name: updatedAt
         label: Last Updated
         type: date
+        description: Update this when you make significant changes to the post
+      - name: featured
+        label: Featured Post
+        type: boolean
+        default: false
+        description: Featured posts appear prominently on the homepage
       - name: tags
         label: Tags
         type: string
         list: true
-        description: Add tags to categorize your post
+        description: Add tags to help readers find related content (e.g. lifestyle, travel, tips)
       - name: cover
         label: Cover Image
         type: object
+        description: The main image for your post (recommended size 1200x630 pixels)
         fields:
           - name: src
             label: Image
             type: image
+            description: Upload or select an image
           - name: alt
             label: Alt Text
             type: string
+            description: Describe the image for accessibility (e.g. "Woman reading a book in a cafe")
       - name: draft
         label: Draft
         type: boolean
         default: false
-        description: Draft posts are not published
+        description: Enable this to save without publishing - only you can see draft posts
+      - name: canonicalUrl
+        label: Canonical URL
+        type: string
+        description: Only needed if this post was originally published elsewhere
 
+  # Custom Pages Collection
+  - name: pages
+    label: Pages
+    path: src/content/pages
+    type: collection
+    format: md
+    fields:
+      - name: title
+        label: Page Title
+        type: string
+        required: true
+        description: The title of this page
+      - name: description
+        label: Description
+        type: text
+        description: A brief description for search engines
+      - name: layout
+        label: Layout Style
+        type: string
+        default: default
+        options:
+          - label: Default (with sidebar)
+            value: default
+          - label: Full Width
+            value: full
+          - label: Narrow (for text-heavy pages)
+            value: narrow
+        description: Choose how this page should be laid out
+      - name: showInNav
+        label: Show in Navigation
+        type: boolean
+        default: false
+        description: Add this page to the main navigation menu
+      - name: navOrder
+        label: Navigation Order
+        type: number
+        description: Order in navigation menu (lower numbers appear first)
+
+  # Site Settings
   - name: settings
     label: Site Settings
     path: src/data/site-settings.json
     type: file
     format: json
     fields:
+      # Branding Section
       - name: siteTitle
         label: Site Title
         type: string
         required: true
+        description: Your blog's name (appears in browser tab and header)
       - name: siteDescription
         label: Site Description
         type: text
         required: true
+        description: A tagline or brief description of your blog (shown in search results)
+      - name: logo
+        label: Logo
+        type: object
+        description: Optional logo image for your site header
+        fields:
+          - name: src
+            label: Logo Image
+            type: image
+            description: Upload your logo (recommended height 40-60 pixels)
+          - name: alt
+            label: Alt Text
+            type: string
+            description: Text alternative for the logo
+      - name: favicon
+        label: Favicon
+        type: object
+        description: The small icon shown in browser tabs
+        fields:
+          - name: src
+            label: Favicon Image
+            type: image
+            description: Upload a square image (recommended 32x32 or 64x64 pixels)
+
+      # Author Section
       - name: author
         label: Author Name
         type: string
         required: true
+        description: Your name as it should appear on posts
       - name: authorBio
         label: Author Bio
         type: text
+        description: A short bio about yourself (shown in sidebar and about page)
       - name: authorImage
-        label: Author Image
+        label: Author Photo
         type: object
+        description: Your profile photo
         fields:
           - name: src
-            label: Image
+            label: Photo
             type: image
+            description: Upload a profile photo (square images work best)
           - name: alt
             label: Alt Text
             type: string
+            description: Description of the photo
+
+      # Social Links Section
       - name: socialLinks
-        label: Social Links
+        label: Social Media Links
         type: object
+        description: Connect your social media profiles
         fields:
           - name: email
-            label: Email
+            label: Email Address
             type: string
+            description: Your contact email (e.g. hello@example.com)
           - name: twitter
-            label: Twitter URL
+            label: Twitter/X Profile
             type: string
+            description: Full URL to your profile (e.g. https://twitter.com/username)
           - name: instagram
-            label: Instagram URL
+            label: Instagram Profile
             type: string
+            description: Full URL to your profile (e.g. https://instagram.com/username)
           - name: website
-            label: Website URL
+            label: Other Website
             type: string
+            description: Link to another website or portfolio
+
+      # Navigation Section
+      - name: navigation
+        label: Navigation Menu
+        type: object
+        list: true
+        description: Links that appear in the main menu
+        fields:
+          - name: label
+            label: Link Text
+            type: string
+            required: true
+            description: Text shown in the menu (e.g. Home, Blog, About)
+          - name: href
+            label: Link URL
+            type: string
+            required: true
+            description: Where the link goes (e.g. / for home, /blog for blog, /about for about)
+          - name: external
+            label: Opens in New Tab
+            type: boolean
+            default: false
+            description: Enable for links to external websites
+
+      # Footer Section
       - name: footerText
         label: Footer Text
         type: string
-      - name: aboutPage
-        label: About Page
+        description: Custom text to display in the footer (e.g. "Made with love")
+
+      # SEO Defaults Section
+      - name: seoDefaults
+        label: Default SEO Settings
         type: object
+        description: Default settings for search engines and social sharing
+        fields:
+          - name: ogImage
+            label: Default Social Image
+            type: object
+            description: Image shown when your site is shared on social media
+            fields:
+              - name: src
+                label: Image
+                type: image
+                description: Recommended size 1200x630 pixels
+              - name: alt
+                label: Alt Text
+                type: string
+
+      # About Page Section
+      - name: aboutPage
+        label: About Page Content
+        type: object
+        description: Content for your About page
         fields:
           - name: title
-            label: Title
+            label: Page Title
             type: string
+            description: Heading for the about page
           - name: content
-            label: Content
+            label: Main Content
             type: rich-text
+            description: Write about yourself using the editor
           - name: metaTitle
-            label: Meta Title
+            label: SEO Title
             type: string
+            description: Title shown in search results (leave blank to use page title)
           - name: metaDescription
-            label: Meta Description
+            label: SEO Description
             type: text
+            description: Description shown in search results
 
 media:
   input: public/uploads
   output: /uploads
-

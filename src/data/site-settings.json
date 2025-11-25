@@ -1,10 +1,27 @@
 {
   "siteTitle": "Reset at 30",
   "siteDescription": "A thoughtful collection of stories about life, style, and everything in between.",
+  "logo": null,
+  "favicon": null,
   "author": "Sukhman Kaur",
   "authorBio": "Welcome to my corner of the internet, where I share stories about life, style, travel, and everything that sparks joy.",
   "authorImage": {
     "src": "/uploads/360_F_155049786_Ch17gRfPjmKG5N9S21VMs8LWBkjkfVDi.jpg"
+  },
+  "socialLinks": {
+    "email": "",
+    "twitter": "",
+    "instagram": "",
+    "website": ""
+  },
+  "navigation": [
+    { "label": "Home", "href": "/", "external": false },
+    { "label": "Blog", "href": "/blog", "external": false },
+    { "label": "About", "href": "/about", "external": false }
+  ],
+  "footerText": "",
+  "seoDefaults": {
+    "ogImage": null
   },
   "aboutPage": {
     "title": "About",

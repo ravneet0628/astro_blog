@@ -2,6 +2,7 @@
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
+import { ViewTransitions } from 'astro:transitions';
 import { getSiteSettings } from '../lib/site-settings';
 
 export interface Props {
@@ -155,3 +156,6 @@ const imageUrl = image ? (image.startsWith('http') ? image : new URL(image, Astr
 <!-- Performance & Security -->
 <meta name="robots" content="index, follow" />
 <meta name="googlebot" content="index, follow" />
+
+<!-- View Transitions for smooth navigation -->
+<ViewTransitions />

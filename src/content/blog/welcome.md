@@ -2,12 +2,10 @@
 title: "Welcome to My Blog"
 excerpt: "This is my first blog post using Pages CMS. Learn how to create your own content!"
 publishedAt: 2025-01-01
+featured: true
 tags:
   - welcome
   - getting-started
-cover:
-  src: "/uploads/placeholder.jpg"
-  alt: "Welcome banner"
 draft: false
 ---
 
@@ -30,6 +28,7 @@ Each blog post supports the following fields:
 - **excerpt**: A short summary shown in previews
 - **publishedAt** (required): Publication date
 - **updatedAt**: Last update date
+- **featured**: Mark as a featured post for homepage highlighting
 - **tags**: Array of tags for categorization
 - **cover**: Cover image with `src` and `alt` properties
 - **draft**: Set to `true` to hide the post from production
@@ -45,4 +44,3 @@ You can use all standard markdown features:
 - And more...
 
 Happy blogging!
-

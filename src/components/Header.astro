@@ -1,24 +1,25 @@
 ---
 import HeaderLink from './HeaderLink.astro';
 import { getPosts, type PostData } from '../lib/content';
-import { getSiteSettings, getNavigationItems } from '../lib/site-settings';
+import { getSiteSettings, getNavigationItems, getLogo } from '../lib/site-settings';
 
 const currentPath = Astro.url.pathname;
 
 // Get site settings and navigation
 const siteSettings = getSiteSettings();
 const navigationItems = getNavigationItems();
+const logo = getLogo();
 
-// Helper function to detect external links
-const isExternalLink = (href: string) => {
-	return href.startsWith('http://') || href.startsWith('https://');
+// Helper function to detect external links (fallback if not specified in CMS)
+const isExternalLink = (item: { href: string; external?: boolean }) => {
+	if (item.external !== undefined) return item.external;
+	return item.href.startsWith('http://') || item.href.startsWith('https://');
 };
 
 // Load posts for search functionality
 let searchPosts: PostData[] = [];
 try {
 	searchPosts = await getPosts(100);
-	console.log(`Loaded ${searchPosts.length} posts for search`);
 } catch (error) {
 	console.error('Failed to load posts for search:', error);
 	searchPosts = [];
@@ -39,16 +40,24 @@ const searchData = searchPosts.map(post => ({
 			<!-- Logo -->
 			<div class="flex-shrink-0">
 				<a href="/" class="block">
-					<h1 class="text-2xl font-serif font-bold text-primary hover:text-accent transition-colors">
-						{siteSettings.siteTitle}
-					</h1>
+					{logo?.src ? (
+						<img 
+							src={logo.src} 
+							alt={logo.alt || siteSettings.siteTitle} 
+							class="h-10 w-auto"
+						/>
+					) : (
+						<span class="text-2xl font-serif font-bold text-primary hover:text-accent transition-colors">
+							{siteSettings.siteTitle}
+						</span>
+					)}
 				</a>
 			</div>
 
 			<!-- Desktop Navigation -->
 			<div class="hidden md:flex items-center space-x-8">
 				{navigationItems.map((item) => {
-					const isExternal = isExternalLink(item.href);
+					const isExternal = isExternalLink(item);
 					return (
 						<HeaderLink 
 							href={item.href} 
@@ -110,7 +119,7 @@ const searchData = searchPosts.map(post => ({
 		<div id="mobile-menu" class="md:hidden hidden pt-4 border-t border-muted mt-4">
 			<div class="space-y-4">
 				{navigationItems.map((item) => {
-					const isExternal = isExternalLink(item.href);
+					const isExternal = isExternalLink(item);
 					return (
 						<HeaderLink 
 							href={item.href} 

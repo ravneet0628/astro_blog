@@ -6,11 +6,12 @@ const today = new Date();
 // Get site settings and dynamic content
 const siteSettings = getSiteSettings();
 const navigationItems = getNavigationItems();
-const socialLinks = getSocialLinks() as Record<string, string>;
+const socialLinks = getSocialLinks();
 
-// Helper function to detect external links
-const isExternalLink = (href: string) => {
-	return href.startsWith('http://') || href.startsWith('https://');
+// Helper function to detect external links (uses CMS setting with fallback)
+const isExternalLink = (item: { href: string; external?: boolean }) => {
+	if (item.external !== undefined) return item.external;
+	return item.href.startsWith('http://') || item.href.startsWith('https://');
 };
 ---
 
@@ -32,7 +33,7 @@ const isExternalLink = (href: string) => {
 				<h4 class="font-semibold text-primary mb-3">Explore</h4>
 				<nav class="space-y-2">
 					{navigationItems.map((item) => {
-						const isExternal = isExternalLink(item.href);
+						const isExternal = isExternalLink(item);
 						return (
 							<a 
 								href={item.href} 

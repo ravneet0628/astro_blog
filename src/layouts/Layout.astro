@@ -16,13 +16,21 @@ const { title, description = "A thoughtful collection of stories about life, sty
   <head>
     <BaseHead title={title} description={description} />
   </head>
-  <body class="bg-white dark:bg-muted-dark text-primary dark:text-primary-dark transition-colors">
+  <body class="bg-white text-primary">
+    <!-- Skip to main content link for accessibility -->
+    <a 
+      href="#main-content" 
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-accent focus:text-white focus:rounded-lg focus:outline-none"
+    >
+      Skip to main content
+    </a>
+    
     <Header />
     
-    <main class="min-h-screen">
+    <main id="main-content" class="min-h-screen" tabindex="-1">
       <slot />
     </main>
     
     <Footer />
   </body>
-</html> 
+</html>
