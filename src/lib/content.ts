@@ -27,6 +27,7 @@ export function toPostData(entry: BlogPost): PostData {
     slug: entry.slug,
     title: entry.data.title,
     excerpt: entry.data.excerpt,
+    body: entry.body,
     cover: entry.data.cover,
     tags: entry.data.tags,
     publishedAt: entry.data.publishedAt,

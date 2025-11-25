@@ -1,81 +1,50 @@
 ---
 import Layout from '../../../layouts/Layout.astro';
-import PostCard from '../../../components/PostCard.astro';
-import Pagination from '../../../components/Pagination.astro';
-import { getPosts } from '../../../lib/content';
-
-const POSTS_PER_PAGE = 6;
+import BlogListing from '../../../components/BlogListing.astro';
+import { getPosts, getAllTags } from '../../../lib/content';
 
 export async function getStaticPaths() {
-  const POSTS_PER_PAGE = 6;
-  
-  // Fetch all posts to determine total pages
-  const allPosts = await getPosts();
-  const totalPosts = allPosts.length;
-  const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
-  
-  // Generate paths for all pages (starting from page 2, page 1 is /blog)
-  const paths = [];
-  for (let i = 2; i <= totalPages; i++) {
-    paths.push({
-      params: { page: i.toString() }
-    });
-  }
-  
-  return paths;
+	const POSTS_PER_PAGE = 6;
+	const allPosts = await getPosts();
+	const totalPages = Math.max(1, Math.ceil(allPosts.length / POSTS_PER_PAGE));
+	
+	// Generate paths for pages 2+, page 1 is handled by /blog/index.astro
+	const paths = [];
+	for (let page = 2; page <= totalPages; page++) {
+		paths.push({ params: { page: String(page) } });
+	}
+	return paths;
 }
 
-const { page } = Astro.params;
-const currentPage = parseInt(page || '1');
-const offset = (currentPage - 1) * POSTS_PER_PAGE;
+const POSTS_PER_PAGE = 6;
+const currentPage = Number(Astro.params.page);
 
-// Fetch all posts and paginate
+if (!Number.isFinite(currentPage) || currentPage < 1) {
+	return Astro.redirect('/blog');
+}
+
 const allPosts = await getPosts();
-const posts = allPosts.slice(offset, offset + POSTS_PER_PAGE);
-const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
+const tags = await getAllTags();
+const totalPages = Math.max(1, Math.ceil(allPosts.length / POSTS_PER_PAGE));
 
-const pageTitle = currentPage === 1 ? 'All Stories' : `All Stories - Page ${currentPage}`;
-const pageDescription = currentPage === 1 
-  ? 'A curated collection of thoughtful stories about life, creativity, and inspiration.'
-  : `Page ${currentPage} of our curated collection of thoughtful stories.`;
+if (currentPage > totalPages) {
+	return Astro.redirect('/blog');
+}
+
+const start = (currentPage - 1) * POSTS_PER_PAGE;
+const posts = allPosts.slice(start, start + POSTS_PER_PAGE);
+
+const pageTitle = `All Stories – Page ${currentPage}`;
+const pageDescription = 'Browse every story in the archive.';
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
-  <div class="max-w-6xl mx-auto px-6 py-12">
-    <!-- Header -->
-    <header class="text-center mb-12">
-      <h1 class="text-4xl lg:text-5xl font-serif font-bold text-primary mb-4">
-        All Stories
-      </h1>
-      <p class="text-lg text-primary/70 max-w-2xl mx-auto">
-        {currentPage === 1 
-          ? 'A curated collection of thoughtful stories about life, creativity, and inspiration.'
-          : `Page ${currentPage} of ${totalPages}`
-        }
-      </p>
-    </header>
-
-    <!-- Posts Grid -->
-    {posts.length > 0 ? (
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {posts.map((post) => (
-          <PostCard post={post} />
-        ))}
-      </div>
-    ) : (
-      <div class="text-center py-16">
-        <h2 class="text-2xl font-serif text-primary mb-4">No posts found</h2>
-        <p class="text-primary/70">
-          There are no posts available on this page.
-        </p>
-      </div>
-    )}
-
-    <!-- Pagination -->
-    <Pagination 
-      currentPage={currentPage}
-      totalPages={totalPages}
-      basePath="/blog"
-    />
-  </div>
+	<BlogListing 
+		posts={posts} 
+		tags={tags} 
+		currentPage={currentPage} 
+		totalPages={totalPages} 
+		totalPosts={allPosts.length}
+		basePath="/blog"
+	/>
 </Layout>

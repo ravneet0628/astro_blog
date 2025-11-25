@@ -1,0 +1,431 @@
+---
+import type { PostData } from '../lib/content';
+import PostCard from './PostCard.astro';
+import Pagination from './Pagination.astro';
+
+interface Props {
+  posts: PostData[];
+  tags: string[];
+  currentPage: number;
+  totalPages: number;
+  totalPosts: number;
+  basePath?: string;
+}
+
+const {
+  posts,
+  tags,
+  currentPage,
+  totalPages,
+  totalPosts,
+  basePath = '/blog',
+} = Astro.props;
+---
+
+<!-- Posts Grid -->
+<section class="py-16">
+	<div class="max-w-6xl mx-auto px-6">
+		<!-- Filters Toggle -->
+		<section class="mb-8 flex flex-col gap-4 rounded-2xl border border-muted/70 bg-white/80 p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+			<div>
+				<p class="text-lg font-serif font-semibold text-primary">Browse every story</p>
+				<p class="text-sm text-primary/60">
+					<span id="filter-summary" data-total-posts={totalPosts}>
+						Showing all {posts.length} posts on this page ({totalPosts} total)
+					</span>
+				</p>
+			</div>
+			<div class="flex flex-wrap gap-3">
+				<button 
+					type="button"
+					class="inline-flex items-center gap-2 rounded-full border border-accent/50 px-4 py-2 text-sm font-semibold text-accent transition hover:border-accent hover:bg-accent/10"
+					data-toggle-filters
+					aria-expanded="false"
+					aria-controls="post-filters"
+				>
+					<svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M6 12h12m-9 6h6"/>
+					</svg>
+					Filters & search
+				</button>
+			</div>
+		</section>
+
+		<!-- Filters Panel -->
+		<section 
+			id="post-filters"
+			class="filters-panel hidden bg-muted/60 border border-muted rounded-2xl p-6 mb-10 shadow-sm"
+			aria-hidden="true"
+		>
+			<div class="flex items-start justify-between gap-4 mb-6">
+				<div>
+					<h2 class="text-xl font-serif font-semibold text-primary">Refine results</h2>
+					<p class="text-sm text-primary/60">Combine keyword search with tags to quickly narrow the list.</p>
+				</div>
+				<button 
+					type="button"
+					class="text-sm text-primary/60 hover:text-accent transition-colors"
+					data-close-filters
+				>
+					Close
+				</button>
+			</div>
+			<div class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+				<div class="w-full md:w-2/3">
+					<label for="post-filter-text" class="block text-sm font-semibold text-primary/70 mb-2">
+						Search posts
+					</label>
+					<div class="relative">
+						<input 
+							type="search" 
+							id="post-filter-text"
+							placeholder="Search by title or summary..."
+							class="w-full px-4 py-3 rounded-xl border border-muted bg-white focus:outline-none focus:ring-2 focus:ring-accent"
+							data-filter="text"
+							autocomplete="off"
+						/>
+						<svg class="w-5 h-5 text-primary/50 absolute right-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0z"/>
+						</svg>
+					</div>
+				</div>
+				<div class="w-full md:w-1/3">
+					{tags.length > 0 ? (
+						<div class="space-y-3">
+							<div class="flex items-center justify-between">
+								<label class="block text-sm font-semibold text-primary/70">
+									Filter by tags
+								</label>
+								<button 
+									type="button" 
+									class="text-xs text-primary/60 hover:text-accent transition-colors"
+									data-clear-tags
+								>
+									Clear selection
+								</button>
+							</div>
+							<div class="relative">
+								<input 
+									type="search"
+									class="w-full rounded-xl border border-muted bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+									placeholder="Search tags..."
+									data-tag-search
+									autocomplete="off"
+								/>
+								<svg class="w-4 h-4 text-primary/50 absolute right-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m2-5a5 5 0 1 1-10 0 5 5 0 0 1 10 0z"/>
+								</svg>
+							</div>
+							<div class="flex max-h-56 flex-wrap gap-2 overflow-y-auto pr-1" data-tag-list>
+								{tags.map((tag) => (
+									<button 
+										type="button"
+										class="tag-chip"
+										data-filter-tag={tag}
+										aria-pressed="false"
+									>
+										<span>#{tag}</span>
+										<svg class="w-3 h-3" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+											<path fill-rule="evenodd" d="M16.707 5.293a1 1 0 0 0-1.414 0L8 12.586 4.707 9.293a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.414 0l8-8a1 1 0 0 0 0-1.414Z" clip-rule="evenodd"/>
+										</svg>
+									</button>
+								))}
+							</div>
+							<p class="hidden text-sm text-primary/50" data-no-tags>
+								No tags match that search.
+							</p>
+						</div>
+					) : (
+						<div>
+							<label class="block text-sm font-semibold text-primary/70 mb-2">
+								Filter by tags
+							</label>
+							<p class="text-sm text-primary/60">Add tags to posts to enable filtering.</p>
+						</div>
+					)}
+				</div>
+			</div>
+		</section>
+		
+		{posts.length > 0 ? (
+			<>
+
+				<!-- Regular Posts -->
+				<div id="posts-grid" class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+					{posts.map((post) => (
+						<div 
+							data-post-card
+							data-title={post.title.toLowerCase()}
+							data-excerpt={(post.excerpt || '').toLowerCase()}
+							data-tags={(post.tags || []).join('|').toLowerCase()}
+							class="transition-opacity"
+						>
+							<PostCard post={post} />
+						</div>
+					))}
+				</div>
+
+				<!-- Pagination -->
+				<Pagination 
+					currentPage={currentPage}
+					totalPages={totalPages}
+					basePath={basePath}
+				/>
+
+				<div 
+					id="filters-empty" 
+					class="hidden text-center py-16"
+				>
+					<h2 class="text-2xl font-serif font-semibold text-primary mb-4">
+						No stories match your filters
+					</h2>
+					<p class="text-primary/70 mb-6">
+						Try clearing the search or choosing different tags.
+					</p>
+					<button 
+						type="button"
+						class="text-accent hover:text-primary transition-colors"
+						data-reset-filters
+					>
+						Reset filters
+					</button>
+				</div>
+			</>
+		) : (
+			<!-- Empty State -->
+			<div class="text-center py-16">
+				<h2 class="text-2xl font-serif font-semibold text-primary mb-4">
+					No stories yet
+				</h2>
+				<p class="text-primary/70 mb-8">
+					Check back soon for new content.
+				</p>
+				<a 
+					href="/"
+					class="text-accent hover:text-primary transition-colors"
+				>
+					← Back to home
+				</a>
+			</div>
+		)}
+	</div>
+</section>
+
+<script is:inline>
+	const initPostFilters = () => {
+		const container = document.getElementById('post-filters');
+		if (!container || container.dataset.bound === 'true') return;
+		container.dataset.bound = 'true';
+
+		const textInput = container.querySelector('[data-filter="text"]');
+		const tagButtons = Array.from(container.querySelectorAll('[data-filter-tag]'));
+		const tagSearchInput = container.querySelector('[data-tag-search]');
+		const tagList = container.querySelector('[data-tag-list]');
+		const noTagsMessage = container.querySelector('[data-no-tags]');
+		const clearTagsButton = container.querySelector('[data-clear-tags]');
+		const resetButton = document.querySelector('[data-reset-filters]');
+		const cards = Array.from(document.querySelectorAll('[data-post-card]'));
+		const summary = document.getElementById('filter-summary');
+		const totalPosts = summary ? Number(summary.dataset.totalPosts || cards.length) : cards.length;
+		const emptyState = document.getElementById('filters-empty');
+		const postsGrid = document.getElementById('posts-grid');
+		const selectedTags = new Set();
+		let searchTimeout;
+
+		const applyFilters = () => {
+			const query = (textInput?.value || '').trim().toLowerCase();
+			let visibleCount = 0;
+
+			cards.forEach((card) => {
+				const title = card.dataset.title || '';
+				const excerpt = card.dataset.excerpt || '';
+				const tags = (card.dataset.tags || '').split('|').filter(Boolean);
+
+				const matchesText = !query || title.includes(query) || excerpt.includes(query);
+				const matchesTags = selectedTags.size === 0 || Array.from(selectedTags).every((tag) => tags.includes(tag));
+
+				if (matchesText && matchesTags) {
+					card.classList.remove('hidden');
+					visibleCount++;
+				} else {
+					card.classList.add('hidden');
+				}
+			});
+
+			if (summary) {
+				const pageSize = cards.length;
+				const text = visibleCount === pageSize
+					? `Showing all ${visibleCount} posts on this page (${totalPosts} total)`
+					: `Showing ${visibleCount} of ${pageSize} posts on this page (${totalPosts} total)`;
+				summary.textContent = text;
+			}
+
+			if (emptyState && postsGrid) {
+				const isEmpty = visibleCount === 0;
+				emptyState.classList.toggle('hidden', !isEmpty);
+				postsGrid.classList.toggle('hidden', isEmpty);
+			}
+		};
+
+		const clearTags = () => {
+			selectedTags.clear();
+			tagButtons.forEach((button) => {
+				button.classList.remove('tag-chip--active');
+				button.setAttribute('aria-pressed', 'false');
+			});
+			if (tagSearchInput) {
+				tagSearchInput.value = '';
+			}
+			filterVisibleTags('');
+		};
+
+		const resetFilters = () => {
+			if (textInput) textInput.value = '';
+			clearTags();
+			applyFilters();
+		};
+
+		const filterVisibleTags = (query) => {
+			if (!tagList || !tagButtons.length) return;
+			const lowerQuery = query.toLowerCase();
+			let anyVisible = false;
+
+			tagButtons.forEach((button) => {
+				const tag = button.dataset.filterTag?.toLowerCase() || '';
+				const matches = !lowerQuery || tag.includes(lowerQuery);
+				button.classList.toggle('hidden', !matches);
+				if (matches) anyVisible = true;
+			});
+
+			if (noTagsMessage) {
+				noTagsMessage.classList.toggle('hidden', anyVisible);
+			}
+		};
+
+		tagButtons.forEach((button) => {
+			button.addEventListener('click', () => {
+				const tag = button.dataset.filterTag?.toLowerCase();
+				if (!tag) return;
+
+				if (selectedTags.has(tag)) {
+					selectedTags.delete(tag);
+					button.classList.remove('tag-chip--active');
+					button.setAttribute('aria-pressed', 'false');
+				} else {
+					selectedTags.add(tag);
+					button.classList.add('tag-chip--active');
+					button.setAttribute('aria-pressed', 'true');
+				}
+				applyFilters();
+			});
+		});
+
+		if (tagSearchInput) {
+			tagSearchInput.addEventListener('input', (event) => {
+				const value = event.target.value || '';
+				filterVisibleTags(value);
+			});
+		}
+
+		if (clearTagsButton) {
+			clearTagsButton.addEventListener('click', () => {
+				clearTags();
+				applyFilters();
+			});
+		}
+
+		if (resetButton) {
+			resetButton.addEventListener('click', resetFilters);
+		}
+
+		if (textInput) {
+			textInput.addEventListener('input', () => {
+				if (searchTimeout) window.clearTimeout(searchTimeout);
+				searchTimeout = window.setTimeout(applyFilters, 200);
+			});
+		}
+
+		applyFilters();
+	};
+
+	const initFilterPanel = () => {
+		const panel = document.getElementById('post-filters');
+		const toggleButton = document.querySelector('[data-toggle-filters]');
+		const closeButton = panel?.querySelector('[data-close-filters]');
+
+		if (!panel || !toggleButton || panel.dataset.panelBound === 'true') return;
+		panel.dataset.panelBound = 'true';
+
+		const setVisibility = (isOpen) => {
+			panel.classList.toggle('hidden', !isOpen);
+			panel.setAttribute('aria-hidden', String(!isOpen));
+			toggleButton.setAttribute('aria-expanded', String(isOpen));
+		};
+
+		toggleButton.addEventListener('click', () => {
+			const isOpen = panel.classList.contains('hidden');
+			setVisibility(isOpen);
+			if (isOpen) {
+				const input = panel.querySelector('[data-filter="text"]');
+				window.setTimeout(() => input?.focus(), 50);
+			}
+		});
+
+		if (closeButton) {
+			closeButton.addEventListener('click', () => setVisibility(false));
+		}
+	};
+
+	document.addEventListener('DOMContentLoaded', () => {
+		initPostFilters();
+		initFilterPanel();
+	});
+	document.addEventListener('astro:page-load', () => {
+		initPostFilters();
+		initFilterPanel();
+	});
+</script>
+
+<style>
+	.tag-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		border-radius: 9999px;
+		border: 1px solid rgba(11, 19, 43, 0.2);
+		padding: 0.25rem 0.75rem;
+		font-size: 0.875rem;
+		color: rgba(11, 19, 43, 0.8);
+		background-color: white;
+		transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+	}
+
+	.tag-chip.hidden {
+		display: none !important;
+	}
+
+	.tag-chip:focus-visible {
+		outline: 2px solid rgb(250, 178, 102);
+		outline-offset: 2px;
+	}
+
+	.tag-chip.tag-chip--active {
+		background-color: rgb(11, 19, 43);
+		color: #fff;
+		border-color: rgb(11, 19, 43);
+	}
+
+	.tag-chip svg {
+		opacity: 0;
+		transition: opacity 0.2s ease;
+	}
+
+	.tag-chip[aria-pressed="true"] svg {
+		opacity: 1;
+	}
+
+	.filters-panel {
+		transition: opacity 0.2s ease, transform 0.2s ease;
+	}
+</style>
+

@@ -1,65 +1,26 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import PostCard from '../../components/PostCard.astro';
-import Pagination from '../../components/Pagination.astro';
-import TagsList from '../../components/TagsList.astro';
-import { getPosts } from '../../lib/content';
+import BlogListing from '../../components/BlogListing.astro';
+import { getPosts, getAllTags } from '../../lib/content';
 
 const POSTS_PER_PAGE = 6;
 
-// Fetch posts for first page and total count
 const allPosts = await getPosts();
+const tags = await getAllTags();
+const totalPages = Math.max(1, Math.ceil(allPosts.length / POSTS_PER_PAGE));
 const posts = allPosts.slice(0, POSTS_PER_PAGE);
-const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
 
 const pageTitle = 'All Stories';
 const pageDescription = 'A curated collection of thoughtful stories about life, creativity, and inspiration.';
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
-
-	<!-- Posts Grid -->
-	<section class="py-16">
-		<div class="max-w-6xl mx-auto px-6">
-			<!-- Tags List -->
-			<TagsList />
-			
-			{posts.length > 0 ? (
-				<>
-
-					<!-- Regular Posts -->
-					{posts.length > 1 && (
-						<div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-							{posts.slice(0).map((post) => (
-								<PostCard post={post} />
-							))}
-						</div>
-					)}
-
-					<!-- Pagination -->
-					<Pagination 
-						currentPage={1}
-						totalPages={totalPages}
-						basePath="/blog"
-					/>
-				</>
-			) : (
-				<!-- Empty State -->
-				<div class="text-center py-16">
-					<h2 class="text-2xl font-serif font-semibold text-primary mb-4">
-						No stories yet
-					</h2>
-					<p class="text-primary/70 mb-8">
-						Check back soon for new content.
-					</p>
-					<a 
-						href="/"
-						class="text-accent hover:text-primary transition-colors"
-					>
-						← Back to home
-					</a>
-				</div>
-			)}
-		</div>
-	</section>
+	<BlogListing 
+		posts={posts} 
+		tags={tags} 
+		currentPage={1} 
+		totalPages={totalPages} 
+		totalPosts={allPosts.length}
+		basePath="/blog"
+	/>
 </Layout>

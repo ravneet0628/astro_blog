@@ -13,47 +13,42 @@ const { post, featured = false } = Astro.props;
 ---
 
 <article class={`group bg-muted rounded-xl p-4 ${featured ? 'space-y-6' : 'space-y-4'}`}>
-  <a href={`/blog/${post.slug}`} class="block">
-    <div class={`relative overflow-hidden rounded-xl ${
-      featured ? 'aspect-[16/10] mb-6' : 'aspect-[4/3] mb-4'
-    }`}>
+  <div class="space-y-4">
+    <a 
+      href={`/blog/${post.slug}`} 
+      class={`relative block overflow-hidden rounded-xl focus:outline-none focus:ring-2 focus:ring-accent ${
+        featured ? 'aspect-[16/10]' : 'aspect-[4/3]'
+      }`}
+      aria-label={`Read ${post.title}`}
+    >
       <OptimizedImage 
         src={post.cover}
         alt={post.cover?.alt || post.title}
-        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         loading={featured ? "eager" : "lazy"}
       />
-    </div>
+    </a>
     
     <div class="space-y-3">
       <!-- Meta -->
-      <div class="flex items-center gap-3 text-sm text-primary/70">
+      <div class="flex flex-wrap items-center gap-2 text-sm text-primary/70">
         <FormattedDate date={post.publishedAt} />
         {post.tags && post.tags.length > 0 && (
-          <div class="flex items-center gap-2">
-            <a 
-              href={`/tags/${encodeURIComponent(post.tags[0])}`}
-              class="bg-muted text-primary px-2 py-1 rounded-full text-xs font-medium hover:bg-accent hover:text-white transition-colors"
-              onclick="event.stopPropagation()"
-            >
-              #{post.tags[0]}
-            </a>
-
-          </div>
-        )}
-        {post.tags && post.tags.length > 1 && (
-          <div class="flex items-center gap-2">
-            <a 
-              href={`/tags/${encodeURIComponent(post.tags[1])}`}
-              class="bg-muted text-primary px-2 py-1 rounded-full text-xs font-medium hover:bg-accent hover:text-white transition-colors"
-              onclick="event.stopPropagation()"
-            >
-              #{post.tags[1]}
-            </a>
-            {post.tags.length > 2 && (
-              <span class="text-xs text-primary/50">+{post.tags.length - 2}</span>
+          <>
+            {post.tags.slice(0, 3).map((tag) => (
+              <a 
+                href={`/tags/${encodeURIComponent(tag)}`}
+                class="bg-white/60 text-primary px-2 py-1 rounded-full text-xs font-medium hover:bg-accent hover:text-white transition-colors"
+              >
+                #{tag}
+              </a>
+            ))}
+            {post.tags.length > 3 && (
+              <span class="text-xs text-primary/50">
+                +{post.tags.length - 3}
+              </span>
             )}
-          </div>
+          </>
         )}
         {post.body && (
           <ReadingTime 
@@ -65,11 +60,16 @@ const { post, featured = false } = Astro.props;
       </div>
       
       <!-- Title -->
-      <h3 class={`font-serif font-semibold text-primary group-hover:text-accent transition-colors duration-300 leading-tight ${
-        featured ? 'text-3xl lg:text-4xl' : 'text-xl lg:text-2xl'
-      }`}>
-        {post.title}
-      </h3>
+      <a 
+        href={`/blog/${post.slug}`} 
+        class="group/title inline-block focus:outline-none focus:ring-2 focus:ring-accent rounded"
+      >
+        <h3 class={`font-serif font-semibold text-primary group-hover/title:text-accent transition-colors duration-300 leading-tight ${
+          featured ? 'text-3xl lg:text-4xl' : 'text-xl lg:text-2xl'
+        }`}>
+          {post.title}
+        </h3>
+      </a>
       
       <!-- Excerpt -->
       {post.excerpt && (
@@ -78,5 +78,5 @@ const { post, featured = false } = Astro.props;
         </p>
       )}
     </div>
-  </a>
+  </div>
 </article>
