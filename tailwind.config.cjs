@@ -1,12 +1,24 @@
+const withOpacityValue = (variable) => ({ opacityValue }) => {
+  if (opacityValue !== undefined) {
+    return `rgb(var(${variable}) / ${opacityValue})`;
+  }
+  return `rgb(var(${variable}) / 1)`;
+};
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     extend: {
       colors: {
-        primary: '#1a1a1a',
-        accent: '#6366f1',
-        muted: '#f8fafc',
+        primary: withOpacityValue('--color-primary'),
+        accent: withOpacityValue('--color-accent'),
+        muted: withOpacityValue('--color-muted'),
+        surface: withOpacityValue('--color-surface'),
+        border: withOpacityValue('--color-border'),
+        progress: withOpacityValue('--color-progress'),
+        'progress-track': withOpacityValue('--color-progress-track'),
       },
       fontFamily: {
         serif: ['"Playfair Display"', 'serif'],

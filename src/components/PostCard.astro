@@ -12,11 +12,11 @@ export interface Props {
 const { post, featured = false } = Astro.props;
 ---
 
-<article class={`group bg-muted rounded-xl p-4 ${featured ? 'space-y-6' : 'space-y-4'}`}>
+<article class={`group bg-muted rounded-xl p-4 interactive-card focus-within:ring-2 focus-within:ring-accent/40 ${featured ? 'space-y-6' : 'space-y-4'}`}>
   <div class="space-y-4">
     <a 
       href={`/blog/${post.slug}`} 
-      class={`relative block overflow-hidden rounded-xl focus:outline-none focus:ring-2 focus:ring-accent ${
+             class={`relative block overflow-hidden rounded-xl focus:outline-none focus:ring-2 focus:ring-accent transition-transform duration-500 motion-safe:group-hover:scale-[1.02] motion-safe:group-focus-within:scale-[1.01] ${
         featured ? 'aspect-[16/10]' : 'aspect-[4/3]'
       }`}
       aria-label={`Read ${post.title}`}
@@ -38,7 +38,7 @@ const { post, featured = false } = Astro.props;
             {post.tags.slice(0, 3).map((tag) => (
               <a 
                 href={`/tags/${encodeURIComponent(tag)}`}
-                class="bg-white/60 text-primary px-2 py-1 rounded-full text-xs font-medium hover:bg-accent hover:text-white transition-colors"
+               class="bg-surface/60 text-primary px-2 py-1 rounded-full text-xs font-medium hover:bg-accent hover:text-white transition-colors"
               >
                 #{tag}
               </a>

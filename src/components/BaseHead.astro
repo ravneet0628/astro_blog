@@ -44,6 +44,22 @@ const imageUrl = image ? (image.startsWith('http') ? image : new URL(image, Astr
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<script is:inline>
+	(function () {
+		const doc = document.documentElement;
+		const stored = (() => {
+			try {
+				return localStorage.getItem('reset-theme');
+			} catch {
+				return null;
+			}
+		})();
+		const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+		const theme = stored || (prefersDark ? 'dark' : 'light');
+		doc.setAttribute('data-theme', theme);
+		doc.classList.toggle('dark', theme === 'dark');
+	})();
+</script>
 <link rel="sitemap" href="/sitemap-index.xml" />
 <link
 	rel="alternate"
