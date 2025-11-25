@@ -3,8 +3,17 @@ content:
     label: Blog Posts
     path: src/content/blog
     type: collection
-    format: md
-    filename: "{fields.title}"
+    format: frontmatter
+    match: "**/*.md"
+    label_field: title
+    slug_field: title
+    body_field: body
+    preview_path: /blog/{{ slug }}
+    view:
+      fields: [title, publishedAt, featured, draft]
+      primary: title
+      sort: publishedAt
+      order: desc
     fields:
       - name: title
         label: Title
@@ -37,6 +46,9 @@ content:
           - name: alt
             label: Alt Text
             type: string
+      - name: body
+        label: Content
+        type: markdown
 
   - name: settings
     label: Site Settings
