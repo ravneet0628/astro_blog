@@ -4,6 +4,7 @@ metaTitle: About
 metaDescription: Learn more about me and what you'll find on this blog.
 heroImage:
   src: /uploads/360_F_155049786_Ch17gRfPjmKG5N9S21VMs8LWBkjkfVDi.jpg
+  alt: Author image
 ---
 # About Me
 
