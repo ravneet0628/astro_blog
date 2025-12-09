@@ -3,7 +3,7 @@ title: "Building a Capsule Wardrobe: 30 Pieces for Effortless Style in 2025"
 excerpt: How I simplified my closet to 30 versatile pieces and finally feel
   confident getting dressed every morning.
 publishedAt: 2025-10-15
-draft: false
+draft: true
 tags:
   - fashion
   - minimalism
