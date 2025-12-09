@@ -10,7 +10,7 @@ A modern, responsive blog site built with Astro and Pages CMS.
 - **Responsive Design** with Tailwind CSS
 - **SEO Optimized** with sitemap and RSS feed generation
 - **Reading Time Calculation** for blog posts
-- **Tag-based Navigation** for content organization
+- **Tag-based Navigation** with clickable tag pages (`/tags/<tag>`) and a tag cloud in the author sidebar that shows top-used tags
 
 ## Tech Stack
 
@@ -38,7 +38,7 @@ A modern, responsive blog site built with Astro and Pages CMS.
    npm install
    ```
 
-3. **Start the development server**
+3. **Start the development server** (defaults to port 4321)
    ```bash
    npm run dev
    ```
