@@ -1,8 +1,12 @@
 ---
 import { getSiteSettings } from '../lib/site-settings';
+import { getTopTags } from '../lib/content';
 
 // Get site settings
 const siteSettings = getSiteSettings();
+
+// Load top tags for tag cloud
+const displayedTags = await getTopTags(8);
 
 // Author data with fallbacks
 const author = {
@@ -18,9 +22,9 @@ const author = {
 };
 ---
 
-<div class="space-y-6 align-center">
+<div class="space-y-6 align-center h-full">
   <!-- Author Profile Card -->
-  <div class="bg-muted rounded-xl p-6">
+  <div class="bg-muted rounded-xl p-8 h-full flex flex-col justify-center min-h-[520px] space-y-6">
     <!-- Author Avatar & Name -->
     <div class="flex-col items-center justify-center space-x-4 mb-4">
       <div class="w-36 h-36 mx-auto rounded-full overflow-hidden">
@@ -113,32 +117,22 @@ const author = {
         </a>
       )}
     </div>
+
+    {displayedTags.length > 0 && (
+      <div class="pt-8 border-t border-primary/10 text-center space-y-3">
+        <p class="text-xs uppercase tracking-[0.08em] text-primary/50">Browse by tag</p>
+        <div class="flex flex-wrap justify-center gap-2">
+          {displayedTags.map((tag) => (
+            <a
+              href={`/tags/${encodeURIComponent(tag)}`}
+              class="px-3 py-1 rounded-full bg-primary/5 text-primary/80 hover:bg-primary/10 hover:text-accent transition-colors text-xs"
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
   </div>
 
-  <!-- Newsletter Section -->
-  <div class="bg-muted rounded-xl p-6">
-    <div class="mb-4 text-center">
-      <h4 class="font-serif text-lg font-semibold text-primary mb-2">
-        Subscribe to my newsletter
-      </h4>
-      <p class="text-sm text-primary/60">
-        Get the latest posts and insights delivered directly to your inbox.
-      </p>
-    </div>
-    
-    <form class="flex flex-col gap-3">
-      <input 
-        type="email" 
-        placeholder="Your email address"
-        class="flex-1 px-4 py-3 rounded-lg border border-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent text-sm"
-        required
-      />
-      <button 
-        type="submit"
-        class="px-6 py-3 bg-accent text-white font-medium rounded-lg hover:bg-primary transition-colors duration-200 text-sm"
-      >
-        Subscribe
-      </button>
-    </form>
-  </div>
 </div>

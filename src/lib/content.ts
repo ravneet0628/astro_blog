@@ -125,6 +125,31 @@ export async function getAllTags(): Promise<string[]> {
 }
 
 /**
+ * Get top tags by frequency (descending). Limits to avoid huge lists.
+ */
+export async function getTopTags(limit = 8): Promise<string[]> {
+  const posts = await getCollection('blog', ({ data }) => {
+    return import.meta.env.PROD ? !data.draft : true;
+  });
+
+  const counts: Record<string, number> = {};
+  posts.forEach(post => {
+    post.data.tags.forEach(tag => {
+      const key = tag;
+      counts[key] = (counts[key] || 0) + 1;
+    });
+  });
+
+  return Object.entries(counts)
+    .sort((a, b) => {
+      if (b[1] !== a[1]) return b[1] - a[1];
+      return a[0].localeCompare(b[0]);
+    })
+    .slice(0, limit)
+    .map(([tag]) => tag);
+}
+
+/**
  * Get related posts based on shared tags
  */
 export async function getRelatedPosts(
