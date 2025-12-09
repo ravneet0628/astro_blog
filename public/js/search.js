@@ -37,9 +37,12 @@ class BlogSearch {
 
     // Click outside to close
     document.addEventListener('click', (e) => {
-      if (this.searchDropdown && !this.searchDropdown.contains(e.target) && 
-          (!this.searchToggleMobile || !this.searchToggleMobile.contains(e.target)) && 
-          (!this.searchToggleDesktop || !this.searchToggleDesktop.contains(e.target))) {
+      const clickedInsideDropdown = this.searchDropdown && this.searchDropdown.contains(e.target);
+      const clickedOnToggle = (this.searchToggleMobile && this.searchToggleMobile.contains(e.target)) ||
+        (this.searchToggleDesktop && this.searchToggleDesktop.contains(e.target)) ||
+        (this.mobileSearchTrigger && this.mobileSearchTrigger.contains(e.target));
+
+      if (this.searchDropdown && !clickedInsideDropdown && !clickedOnToggle) {
         this.closeSearchDropdown();
       }
     });
@@ -67,6 +70,7 @@ class BlogSearch {
     if (this.mobileSearchTrigger) {
       this.mobileSearchTrigger.addEventListener('click', (event) => {
         event.preventDefault();
+        event.stopPropagation();
         document.dispatchEvent(new CustomEvent('mobile-menu:close'));
         this.openSearchDropdown();
       });
